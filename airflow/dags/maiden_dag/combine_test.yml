@@ -1,0 +1,12 @@
+operator: MaterializedPostgresOperator
+query: |-
+    WITH
+
+    norris AS (SELECT joke AS column FROM views.norris_clean),
+    mat_test AS (SELECT childs_first_name AS column FROM views.matview_test)
+
+    SELECT *
+    FROM norris
+    UNION ALL
+    SELECT *
+    FROM mat_test

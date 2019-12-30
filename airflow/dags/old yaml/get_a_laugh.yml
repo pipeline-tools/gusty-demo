@@ -1,0 +1,6 @@
+operator: RandomJokeOperator
+dependencies:
+    - tell_a_joke
+# external_dependencies:
+#     - dag: far_off_dag
+#       task_id: far_off_task

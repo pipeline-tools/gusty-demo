@@ -1,0 +1,5 @@
+operator: MaterializedPostgresOperator
+query: |-
+    SELECT *
+    FROM views.baby_names
+    LIMIT 5

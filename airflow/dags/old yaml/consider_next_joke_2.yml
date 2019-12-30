@@ -1,0 +1,3 @@
+operator: RandomJokeOperator
+dependencies:
+    - get_a_laugh

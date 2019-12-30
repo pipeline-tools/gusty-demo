@@ -1,0 +1,11 @@
+operator: MaterializedPostgresOperator
+external_dependencies:
+    - norris: random_jokes # you can specify entire dag dependency with "all" instead of job name
+fields:
+    - timestamp: "the timestamp of the API call"
+    - joke_id: "the id of the joke from the Internet Chuck Norris Database (ICNDB)"
+    - joke: "the Chuck Norris joke"
+query: |-
+    SELECT *
+    FROM views.random_jokes
+    LIMIT 1

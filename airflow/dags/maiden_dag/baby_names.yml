@@ -1,0 +1,2 @@
+operator: CSVtoPostgresOperator
+csv_file: baby_names.csv

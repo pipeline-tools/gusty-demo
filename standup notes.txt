@@ -1,0 +1,80 @@
+# Python3.x on Ubuntu
+sudo apt-get install python3.6
+
+# Homebrew
+/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+
+brew reinstall openssl@1.1
+
+mkdir airflow_project
+cd airflow_project
+python3 -m venv venv
+source venv/bin/activate
+
+pip3 install setuptools_scm
+pip3 install apache-airflow
+pip3 install psycopg2
+pip3 install cryptography
+
+### Make a postgres DB for airflow backend
+
+# Add metadata db location to environment vars
+
+export AIRFLOW__CORE__SQL_ALCHEMY_CONN=postgresql://airflow:password@localhost:5432/airflow_metadata
+
+# Important airflow configurations
+dag_default_view = graph
+executor = LocalExecutor
+#sql_alchemy_conn = postgresql://airflow:password@localhost:5432/airflow_metadata
+
+airflow initdb
+
+### Separate create a new schema, "views" for your views
+CREATE SCHEMA IF NOT EXISTS views;
+...create an airflow user with a password...
+GRANT ALL PRIVILEGES ON DATABASE datalake TO airflow;
+GRANT ALL PRIVILEGES ON SCHEMA views TO airflow
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA views TO airflow
+
+# Connect to datalake and run below to grant access to all future views tables
+ALTER DEFAULT PRIVILEGES FOR ROLE airflow IN SCHEMA views
+GRANT SELECT ON TABLES TO chris;
+
+### Create a connection in the Airflow interface to connect to your datalake
+
+# current state of my bash profile
+
+        alias python=python3
+
+        export AIRFLOW_HOME=~/Desktop/chris_tries_airflow/airflow
+        export AIRFLOW__CORE__SQL_ALCHEMY_CONN=postgresql://airflow:password@localhost:5432/airflow_metadata
+
+        alias airflow_env='
+        cd $AIRFLOW_HOME
+        cd ..
+        source venv/bin/activate
+        '
+        alias ae=airflow_env
+
+        alias airflow_up='
+        (airflow scheduler >/dev/null) &
+        (airflow webserver >/dev/null) &
+        '
+        alias au=airflow_up
+
+        alias airflow_down='
+        (pgrep -f airflow | xargs kill -9) &
+        sleep 1
+        jobs
+        '
+
+        alias ad=airflow_down
+
+        SLUGIFY_USES_TEXT_UNIDECODE=yes
+
+        export DYLD_LIBRARY_PATH=/Library/PostgreSQL/10/lib
+
+        # Setting PATH for Python 3.6
+        # The original version is saved in .bash_profile.pysave
+        PATH="/Library/Frameworks/Python.framework/Versions/3.6/bin:/Library/PostgreSQL/10/bin/:${PATH}"
+        export PATH

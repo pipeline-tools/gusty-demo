@@ -1,0 +1,4 @@
+operator: PythonOperator
+python_callable: random_joke
+dependencies:
+    - get_a_laugh
