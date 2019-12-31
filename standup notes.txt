@@ -21,6 +21,11 @@ pip3 install cryptography
 # Add metadata db location to environment vars
 
 export AIRFLOW__CORE__SQL_ALCHEMY_CONN=postgresql://airflow:password@localhost:5432/airflow_metadata
+export AIRFLOW__CORE__DAGS_FOLDER="${AIRFLOW_HOME}/dags"
+export AIRFLOW__CORE__BASE_LOG_FOLDER="${AIRFLOW_HOME}/logs"
+
+
+
 
 # Important airflow configurations
 dag_default_view = graph
