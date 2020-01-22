@@ -66,7 +66,7 @@ Once you've done this, you'll want to create a folder inside of `airflow/dags` f
 
 Using the example above, you now have a definition file, `airflow/dags/my_awesome_dag.py`, and a folder for your jobs, `airflow/dags/my_awesome_dag`. Let's put a job in this DAG.
 
-There is a .csv file we could bring into our warehouse, `airflow/dags/csv/baby_names.csv`. To do this, we will make a new `.yml` job definition file, `airflow/dags/my_awesome_dag/baby_names.yml`:
+There is a .csv file we could bring into our warehouse, `airflow/dags/csv/baby_names.csv`. To do this, we will make a new `.yml` job definition file, `airflow/dags/my_awesome_dag/baby_names.yml`. This `.yml` file must include an `operator` parameter, to specify that we will be using the `CSVtoPostgresOperator`, and a `csv_file` parameter to specify the .csv file we will be uploading to our data warehouse:
 
 ```yaml
 operator: CSVtoPostgresOperator
@@ -74,3 +74,80 @@ csv_file: baby_names.csv
 ```
 
 Now, when the my_awesome_dag DAG runs, it will identify the above job, read the .csv, and upload it to the data warehouse. Neat.
+
+## Creating a new operator
+
+(To Add)
+
+# Descriptions of Operators
+
+Now for a quick overview of the two useful general operators that have been built out so far, the `CSVtoPostgresOperator` and the `MaterializedPostgresOperator`.
+
+## CSVtoPostgresOperator
+
+- Required Parameters:
+
+    - **operator** - Specifies the operator we'll be using. Set to `CSVtoPostgresOperator`.
+    - **csv_file** - Specifies the file we'll be uploading. Set to the desired csv file located inside the `airflow/dags/csv` folder.
+    
+Example file:
+
+```yaml
+operator: CSVtoPostgresOperator
+csv_file: baby_names.csv
+```
+
+## MaterializedPostgresOperator
+
+- Required Parameters:
+
+    - **operator** - Specifies the operator we'll be using. Set to `MaterializedPostgresOperator`.
+    - **query** - Specifies the query to be executed. Starts with `|-` so the query can take place over multiple lines.
+    
+- Optional Parameters:
+
+    - **fields** - Allows for commenting on columns in the resulting table for documentation purposes. Each entry should start with a hypen (`-`) and follow the format `field_name: field description`.
+    - **dependencies** - Specifies job dependencies in the local DAG. Each entry should start with a hypen (`-`) and the job name.
+    - **external_dependencies** - Specifies job dependencies in external DAG. Each entry should start with a hypen (`-`) and follow the format `dag_name: job_name`. This will create an external task sensor to wait for a job in the other DAG.
+
+As mentioned, `MaterializedPostgresOperator` jobs will also parse the query to identify any tables that start with `views.`, check if those tables are in the local DAG, and set those dependencies automatically.
+
+Example file:
+
+```yaml
+operator: MaterializedPostgresOperator
+external_dependencies:
+    - my_awesome_dag: baby_names
+fields:
+    - year_of_birth: "year of child name births"
+    - childs_first_name: "first name of the born babies"
+    - count: "number of babies born with childs_first_name"
+query: |-
+    SELECT
+        year_of_birth,
+        childs_first_name,
+        count
+    FROM views.baby_names
+```
+
+# Specifying Dependencies
+
+As mentioned above, dependencies are identified by three means:
+
+    1. Using the `dependencies` specification, you can set dependencies between jobs in the same DAG.
+    2. Using the `external_dependencies` specification, you can set dependecies between jobs in different DAGs.
+    3. For the `MaterializedPostgresOperator`, dependencies in the same DAG that are a part of the `views` schema are automatically registered.
+    
+## Using `dependencies`
+
+Each entry should start with a hypen (`-`) and the job name.
+
+## Using `external_dependencies`
+
+Each entry should start with a hypen (`-`) and follow the format `dag_name: job_name`. This will create an external task sensor to wait for a job in the other DAG.
+
+Additionally the format `dag_name: all` can be used to specify to wait for an entire DAG to complete before another DAG runs.
+
+## Auto-dependencies in `MaterializedPostgresOperator`
+
+`MaterializedPostgresOperator` jobs will also parse the query to identify any tables that start with `views.`, check if those tables are in the local DAG, and set those dependencies automatically.
