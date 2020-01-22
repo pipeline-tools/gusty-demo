@@ -134,9 +134,9 @@ query: |-
 
 As mentioned above, dependencies are identified by three means:
 
-    1. Using the `dependencies` specification, you can set dependencies between jobs in the same DAG.
-    2. Using the `external_dependencies` specification, you can set dependecies between jobs in different DAGs.
-    3. For the `MaterializedPostgresOperator`, dependencies in the same DAG that are a part of the `views` schema are automatically registered.
+  1. Using the `dependencies` specification, you can set dependencies between jobs in the same DAG.
+  2. Using the `external_dependencies` specification, you can set dependecies between jobs in different DAGs.
+  3. For the `MaterializedPostgresOperator`, dependencies in the same DAG that are a part of the `views` schema are automatically registered.
     
 ## Using `dependencies`
 
