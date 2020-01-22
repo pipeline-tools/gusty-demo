@@ -1,4 +1,4 @@
-# Introduction
+# Overview
 
 The purpose of this repo is to provide a jumping-off point for others to use Airflow to set up their own data pipelines without having to configure Airflow from scratch.
 
@@ -14,6 +14,11 @@ The `ez-airflow` project has a few opinions:
 
 - Jobs are defined using `.yml` files.
 
+- All DAGs have two items in the `airflow/dags` folder:
+
+    1. **A `.py` DAG definition file** - This defines the DAG. The DAG's name is determined by the file name.
+    2. **A folder for `.yml` job definition files** - The folder should be named the same as its corresponding DAG definition file.
+
 - All operators:
 
     - Are explicitly defined by users, and located in `airflow/dags/utils/operators`.
@@ -24,3 +29,37 @@ The `ez-airflow` project has a few opinions:
         2. **Operator** - Defines the operator, which is built off of Airflow's BaseOperator, but could probably inheret other operator classes, as well.
         3. **Builder** - Defines a function that builds the and returns the operator.
         4. **Registration** - Registers the builder function to the app. This is done with the `register_build` function.
+
+If you are familiar with building Python applications, hopefully you will find this project useful for getting you started with Airflow.
+
+At this point and time, this project is built for PostgreSQL use cases, but in time can grow to include other database usecases.
+
+# Why use `ez-airflow`
+
+The `.yml` approach to generating jobs within Airflow DAGs is not a new idea, but it is useful and there are a few built in benefits to it here.
+
+- **Dependencies** - Dependencies can quickly be set in `.yml` files through one of three means:
+
+    1. Using the `dependencies` specification, you can set dependencies between jobs in the same DAG.
+    2. Using the `external_dependencies` specification, you can set dependecies between jobs in different DAGs.
+    3. For the `MaterializedPostgresOperator`, dependencies in the same DAG that are a part of the `views` schema are automatically registered.
+    
+- **Operator configuration** - After you build an operator, you can pass parameters to it in each `.yml` job definition file. This means that, for example, if you have to call different API endpoints, you may only need to build one operator to ingest data from this API, and then can specify the endpoint to call in the `.yml` job definition file.
+
+# Setup
+
+## Creating a DAG
+
+In just a few steps, you can create a new dag:
+
+- Copy one of the `.py` files in the `airflow/dags` folder.
+- Change the name of the `.py` file to whatever you want your DAG to be called.
+- Within the `.py` file, change the `owner` and `email` owners in the `default_args` dict, around lines 20 to 30. (Email notications are currently turned off by default.)
+- DAGs are currently set to run once a day. You can change this interval using the `schedule_interval` parameter in the DAG instantiation, around line 35.
+
+Once you've done this, you'll want to create a folder inside of `airflow/dags` for your `.yml` job definition files. Two notes here:
+
+- ***Your folder must be named exactly the same as your DAG definition file. If you DAG is defined in `airflow/dags/my_awesome_dag.py`, then you must have a folder `airflow/dags/my_awesome_dag` to house your `.yml` job definition files.***
+- There is a `airflow/dags/csv` folder that does not correspond to a specifc DAG file. This folder is meant to house any .csv files you want to import to your data warehouse. These .csv files can be ingested using the `CSVtoPostgresOperator`, which will be covered later.
+
+## Creating a new job
