@@ -12,7 +12,7 @@ The `ez-airflow` project has a few opinions:
 
 - The utilities provided in `ez-airflow` should be general enough for anyone to use. It is a foundation upon which individuals can build a data pipeline in Airflow that is suited for their specific needs.
 
-- Jobs are defined using `.yml` files.
+- Jobs are defined using `.yml` files. For jobs that save to the data warehouse, **the name of the `.yml` file will be the name of the resulting table.**
 
 - All DAGs have two items in the `airflow/dags` folder:
 
@@ -63,3 +63,14 @@ Once you've done this, you'll want to create a folder inside of `airflow/dags` f
 - There is a `airflow/dags/csv` folder that does not correspond to a specifc DAG file. This folder is meant to house any .csv files you want to import to your data warehouse. These .csv files can be ingested using the `CSVtoPostgresOperator`, which will be covered later.
 
 ## Creating a new job
+
+Using the example above, you now have a definition file, `airflow/dags/my_awesome_dag.py`, and a folder for your jobs, `airflow/dags/my_awesome_dag`. Let's put a job in this DAG.
+
+There is a .csv file we could bring into our warehouse, `airflow/dags/csv/baby_names.csv`. To do this, we will make a new `.yml` job definition file, `airflow/dags/my_awesome_dag/baby_names.yml`:
+
+```yaml
+operator: CSVtoPostgresOperator
+csv_file: baby_names.csv
+```
+
+Now, when the my_awesome_dag DAG runs, it will identify the above job, read the .csv, and upload it to the data warehouse. Neat.
