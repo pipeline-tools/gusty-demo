@@ -1,0 +1,28 @@
+# taken from...
+# https://raw.githubusercontent.com/puckel/docker-airflow/master/docker-compose-LocalExecutor.yml
+version: '2.1'
+services:
+    postgres:
+        image: postgres:9.6
+        environment:
+            - POSTGRES_USER=airflow
+            - POSTGRES_PASSWORD=airflow
+            - POSTGRES_DB=airflow
+        ports:
+            - "5430:5432"
+
+    airflow:
+        build:
+            context: .
+        command: > 
+            /bin/bash -c "
+                sleep 10;
+                make airflow_init airflow_up;
+            "
+        restart: always
+        depends_on:
+            - postgres
+        volumes:
+            - ./airflow:/usr/local/airflow
+        ports:
+            - "8080:8080"
