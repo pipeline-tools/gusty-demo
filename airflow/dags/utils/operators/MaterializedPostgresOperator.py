@@ -8,7 +8,7 @@ from jinja2 import Template
 
 from sqlalchemy import create_engine
 
-from .operator_utils.db_connections import conn_datalake
+from .operator_utils.db_connections import get_datalake_engine
 from .operator_utils.job_colors import job_colors
 
 from . import register_build
@@ -69,7 +69,7 @@ class MaterializedPostgresOperator(BaseOperator):
                              fields = self.fields)
         print("\n" + query)
 
-        conn = conn_datalake.connect()
+        conn = get_datalake_engine().connect()
 
         try:
             conn.execute(query)

@@ -6,7 +6,7 @@ import pandas as pd
 from airflow.models.baseoperator import BaseOperator
 from airflow.utils.decorators import apply_defaults
 
-from .operator_utils.db_connections import conn_datalake
+from .operator_utils.db_connections import get_datalake_engine
 from .operator_utils.job_colors import job_colors
 
 from . import register_build
@@ -49,7 +49,7 @@ class RandomJokeOperator(BaseOperator):
     def execute(self, context):
         joke = random_joke()
         joke.to_sql(name=self.task_id,
-                    con=conn_datalake,
+                    con=get_datalake_engine(),
                     schema="views",
                     if_exists="append",
                     index=False)
