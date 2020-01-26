@@ -1,5 +1,6 @@
 import os
 import yaml
+import frontmatter
 import re
 
 from utils.operators import available_builds
@@ -14,7 +15,7 @@ from airflow.sensors.external_task_sensor import ExternalTaskSensor
 ## Read Files ##
 ################
 
-valid_extensions = ('.yml')
+valid_extensions = ('.yml', '.Rmd')
 
 def get_files(dag_name):
     """
@@ -34,17 +35,22 @@ def read_yaml_spec(file):
     """
     Reading in yaml specs
     """
-    yaml_file = yaml.load(open(file), Loader=yaml.FullLoader)
+    # Read either the frontmatter or the parsed yaml file (using "or" to coalesce them)
+    file_parsed = frontmatter.load(file)
+    yaml_file = file_parsed.metadata or yaml.load(file_parsed.content, Loader = yaml.FullLoader)
+
     assert "operator" in yaml_file, "No operator specified in yaml spec " + file
+    
     task_id = os.path.splitext(os.path.basename(file))[0]
-    yaml_file.pop("task_id", None) # task_id can't exist in the spec
     yaml_file["task_id"] = task_id.lower().strip()
     assert yaml_file["task_id"] != "all", "Task name 'all' is not allowed. Please change your task name."
+    
+    yaml_file["file_path"] = file
+    
     return yaml_file
 
 def get_yaml_specs(*args, **kwargs):
-    files = files if "files" in kwargs else get_files(kwargs["dag_name"])
-    yaml_files = [file for file in files if file.endswith('.yml')]
+    yaml_files = files if "files" in kwargs else get_files(kwargs["dag_name"])
     assert len(yaml_files) > 0, "No .yml files found."
     specs = [*map(read_yaml_spec, yaml_files)]
     return specs

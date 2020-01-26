@@ -1,0 +1,12 @@
+---
+operator: RmdOperator
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r hello_world}
+# Any R code can go here; potentially code that connects to the data lake
+print("hello, world")
+```
