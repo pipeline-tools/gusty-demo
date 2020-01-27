@@ -24,7 +24,7 @@ The `ez-airflow` project has a few opinions:
     - Are explicitly defined by users, and located in `airflow/dags/utils/operators`.
     - Have their names defined by the `.py` file that contains their interface to Airflow.
     - Use a four-part format:
-    
+
         1. **API** - Defines the functions that will be executed by the operator.
         2. **Operator** - Defines the operator, which is built off of Airflow's BaseOperator, but could probably inheret other operator classes, as well.
         3. **Builder** - Defines a function that builds the and returns the operator.
@@ -43,7 +43,7 @@ The `.yml` approach to generating jobs within Airflow DAGs is not a new idea, bu
     1. Using the `dependencies` specification, you can set dependencies between jobs in the same DAG.
     2. Using the `external_dependencies` specification, you can set dependecies between jobs in different DAGs.
     3. For the `MaterializedPostgresOperator`, dependencies in the same DAG that are a part of the `views` schema are automatically registered.
-    
+
 - **Operator configuration** - After you build an operator, you can pass parameters to it in each `.yml` job definition file. This means that, for example, if you have to call different API endpoints, you may only need to build one operator to ingest data from this API, and then can specify the endpoint to call in the `.yml` job definition file.
 
 # Setup
@@ -77,7 +77,7 @@ Now, when the my_awesome_dag DAG runs, it will identify the above job, read the 
 
 ## Creating a new operator
 
-(To Add)
+(To Add Later)
 
 # Descriptions of Operators
 
@@ -89,7 +89,7 @@ Now for a quick overview of the two useful general operators that have been buil
 
     - **operator** - Specifies the operator we'll be using. Set to `CSVtoPostgresOperator`.
     - **csv_file** - Specifies the file we'll be uploading. Set to the desired csv file located inside the `airflow/dags/csv` folder.
-    
+
 Example file:
 
 ```yaml
@@ -103,7 +103,7 @@ csv_file: baby_names.csv
 
     - **operator** - Specifies the operator we'll be using. Set to `MaterializedPostgresOperator`.
     - **query** - Specifies the query to be executed. Starts with `|-` so the query can take place over multiple lines.
-    
+
 - Optional Parameters:
 
     - **fields** - Allows for commenting on columns in the resulting table for documentation purposes. Each entry should start with a hypen (`-`) and follow the format `field_name: field description`.
@@ -137,7 +137,7 @@ As mentioned above, dependencies are identified by three means:
   1. Using the `dependencies` specification, you can set dependencies between jobs in the same DAG.
   2. Using the `external_dependencies` specification, you can set dependecies between jobs in different DAGs.
   3. For the `MaterializedPostgresOperator`, dependencies in the same DAG that are a part of the `views` schema are automatically registered.
-    
+
 ## Using `dependencies`
 
 Each entry should start with a hypen (`-`) and the job name.
