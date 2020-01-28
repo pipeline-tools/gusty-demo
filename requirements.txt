@@ -13,6 +13,7 @@ colorama==0.4.3
 colorlog==4.0.2
 configparser==3.5.3
 croniter==0.3.30
+cryptography==2.8
 defusedxml==0.6.0
 dill==0.3.1.1
 docutils==0.15.2
@@ -53,6 +54,7 @@ paramiko==2.7.1
 pendulum==1.4.4
 prison==0.1.2
 psutil==5.6.7
+psycopg2==2.8.4
 Pygments==2.5.2
 PyJWT==1.7.1
 pyrsistent==0.15.6
