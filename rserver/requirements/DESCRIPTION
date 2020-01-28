@@ -1,0 +1,11 @@
+Package: requirements
+Title: Dummy Package with RServer Requirements
+Version: 0.0.1
+Authors@R: 
+    person("John", "Doe", email = "example@example.com", role = c("aut", "cre"))
+Description: Dummy package to install requirements for the rserver container.
+    Add packages and/or their versions to the below IMPORTS, and they will be
+    installed in the rserver container on which the R tasks run.
+Imports:
+    rmarkdown (>= 2.1),
+    RPostgres (>= 1.2.0)

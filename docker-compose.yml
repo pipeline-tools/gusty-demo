@@ -11,6 +11,17 @@ services:
         ports:
             - "5430:5432"
 
+    rserver:
+        build:
+            context: ./rserver
+        environment:
+            - PASSWORD=rstudio_password
+            - POSTGRES_DATALAKE=postgres://postgres:airflow@airflow:5432
+        ports:
+            - "8787:8787"
+        volumes:
+            - ./airflow:/usr/local/airflow
+
     airflow:
         build:
             context: .
@@ -19,6 +30,9 @@ services:
                 sleep 10;
                 make airflow_init airflow_up;
             "
+        environment:
+            - AIRFLOW_CONN_SSH_RSERVER=ssh://rstudio:rstudio_password@rserver:22
+            - AIRFLOW_CONN_POSTGRES_DATALAKE=postgres://postgres:airflow@airflow:5432
         restart: always
         depends_on:
             - postgres
