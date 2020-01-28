@@ -32,11 +32,12 @@ class RmdOperator(SSHOperator):
     def __init__(self, file_path, **kwargs):
         self.rmd_file = file_path
         self.ui_color = job_colors["rmd"]
-        
-        # The volume is shared at the same location with the rserver container 
-        self.command = ("Rscript -e 'library(methods); rmarkdown::render(\"%s\")'" %
-          (self.rmd_file, ))
-        
+        self.html_output = file_path.replace('.Rmd', '.html')
+
+        # The volume is shared at the same location with the rserver container
+        self.command = ("Rscript -e 'library(methods); rmarkdown::render(\"%s\")' && rm -f %s" %
+        (self.rmd_file, self.html_output))
+
         super(RmdOperator, self).__init__(
             command = self.command,
             ssh_conn_id = "ssh_rserver",

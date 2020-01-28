@@ -135,9 +135,6 @@ dmypy.json
 *.out
 logs
 
-# Output from knitted Rmd (may need to revisit this)
-*.html
-
 # Using this as Rproj for convenience
 ez-airflow.Rproj
 .Rproj.user
