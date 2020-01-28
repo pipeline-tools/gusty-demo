@@ -1,6 +1,6 @@
 
 airflow_init:
-	airflow initdb
+	airflow upgradedb
 	airflow variables -s datalake_user airflow
 	airflow variables -s datalake_password airflow
 	airflow variables -s datalake_host postgres
@@ -17,6 +17,6 @@ airflow_down:
 	 (pgrep -f airflow | xargs kill -9) &
 	 sleep 1
 	 jobs
-	
+
 airflow_clean:
 	find . -name "*.log" -type f -delete
