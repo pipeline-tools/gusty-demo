@@ -48,6 +48,7 @@ marshmallow==2.19.5
 marshmallow-enum==1.5.1
 marshmallow-sqlalchemy==0.21.0
 more-itertools==8.0.2
+nbformat==4.4.0
 numpy==1.18.0
 pandas==0.25.3
 paramiko==2.7.1

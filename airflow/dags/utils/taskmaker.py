@@ -1,5 +1,6 @@
 import os
 import yaml
+import nbformat
 import frontmatter
 import re
 
@@ -15,7 +16,7 @@ from airflow.sensors.external_task_sensor import ExternalTaskSensor
 ## Read Files ##
 ################
 
-valid_extensions = ('.yml', '.Rmd')
+valid_extensions = ('.yml', '.Rmd', '.ipynb')
 
 def get_files(dag_name):
     """
@@ -35,18 +36,26 @@ def read_yaml_spec(file):
     """
     Reading in yaml specs
     """
-    # Read either the frontmatter or the parsed yaml file (using "or" to coalesce them)
-    file_parsed = frontmatter.load(file)
-    yaml_file = file_parsed.metadata or yaml.load(file_parsed.content, Loader = yaml.FullLoader)
+
+    if file.endswith('.ipynb'):
+        # Find first yaml cell in jupyter notebook and parse yaml
+        nb_cells = nbformat.read(file, as_version=4)['cells']
+        yaml_cell = [cell for cell in nb_cells if cell['cell_type'] == 'markdown' and cell['source'].startswith('```yaml')][0]['source']
+        yaml_file = yaml.safe_load(yaml_cell.replace('```yaml', "").replace("```", ""))
+
+    else:
+        # Read either the frontmatter or the parsed yaml file (using "or" to coalesce them)
+        file_parsed = frontmatter.load(file)
+        yaml_file = file_parsed.metadata or yaml.load(file_parsed.content, Loader = yaml.FullLoader)
 
     assert "operator" in yaml_file, "No operator specified in yaml spec " + file
-    
+
     task_id = os.path.splitext(os.path.basename(file))[0]
     yaml_file["task_id"] = task_id.lower().strip()
     assert yaml_file["task_id"] != "all", "Task name 'all' is not allowed. Please change your task name."
-    
+
     yaml_file["file_path"] = file
-    
+
     return yaml_file
 
 def get_yaml_specs(*args, **kwargs):
