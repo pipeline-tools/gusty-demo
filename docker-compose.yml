@@ -16,7 +16,6 @@ services:
             context: ./rserver
         environment:
             - PASSWORD=rstudio_password
-            - POSTGRES_DATALAKE=postgres://postgres:airflow@airflow:5432
         ports:
             - "8787:8787"
         volumes:
@@ -30,8 +29,6 @@ services:
                 service ssh start
                 sleep infinity
             "
-        environment:
-            - POSTGRES_DATALAKE=postgres://postgres:airflow@airflow:5432
         ports:
             - "8888:8888"
         volumes:
@@ -48,7 +45,6 @@ services:
         environment:
             - AIRFLOW_CONN_SSH_PYTHONSERVER=ssh://pythonuser:pass@pythonserver:22
             - AIRFLOW_CONN_SSH_RSERVER=ssh://rstudio:rstudio_password@rserver:22
-            - AIRFLOW_CONN_POSTGRES_DATALAKE=postgres://postgres:airflow@airflow:5432
         restart: always
         depends_on:
             - postgres
