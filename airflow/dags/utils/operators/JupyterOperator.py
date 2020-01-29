@@ -34,7 +34,7 @@ class JupyterOperator(SSHOperator):
         self.ui_color = job_colors["ipynb"]
 
         # The volume is shared at the same location with the pythonserver container
-        self.command = '(jupyter nbconvert --to script --execute --stdout %s | python)' % (self.ipynb_file, )
+        self.command = '(jupytext --to py --output - %s | python)' % (self.ipynb_file, )
 
         super(JupyterOperator, self).__init__(
             command = self.command,
