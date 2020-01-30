@@ -1,19 +1,9 @@
-from airflow.models import Variable
+from airflow.hooks.base_hook import BaseHook
 from sqlalchemy import create_engine
 from sqlalchemy_utils import create_database, database_exists
 import sqlalchemy
 
-datalake_user = Variable.get('datalake_user')
-datalake_password = Variable.get('datalake_password')
-datalake_host = Variable.get('datalake_host')
-datalake_port = Variable.get('datalake_port')
-
-datalake_conn_string = ("postgresql://" +
-                        datalake_user + ":" +
-                        datalake_password + "@" +
-                        datalake_host + ":" +
-                        datalake_port + "/" +
-                        "datalake")
+datalake_conn_string = BaseHook.get_connection('postgres_datalake').get_uri()
 
 engine = create_engine(datalake_conn_string)
 

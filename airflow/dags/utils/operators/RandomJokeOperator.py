@@ -5,8 +5,10 @@ import pandas as pd
 
 from airflow.models.baseoperator import BaseOperator
 from airflow.utils.decorators import apply_defaults
+from airflow.hooks.base_hook import BaseHook
 
-from .operator_utils.db_connections import get_datalake_engine
+from sqlalchemy import create_engine
+
 from .operator_utils.job_colors import job_colors
 
 from . import register_build
@@ -49,7 +51,7 @@ class RandomJokeOperator(BaseOperator):
     def execute(self, context):
         joke = random_joke()
         joke.to_sql(name=self.task_id,
-                    con=get_datalake_engine(),
+                    con=create_engine(BaseHook.get_connection('postgres_datalake').get_uri()).connect(),
                     schema="views",
                     if_exists="append",
                     index=False)

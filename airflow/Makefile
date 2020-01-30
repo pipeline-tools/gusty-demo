@@ -1,10 +1,7 @@
 
 airflow_init:
 	airflow upgradedb
-	airflow variables -s datalake_user airflow
-	airflow variables -s datalake_password airflow
-	airflow variables -s datalake_host postgres
-	airflow variables -s datalake_port 5432
+	airflow connections -a --conn_id postgres_datalake --conn_uri postgresql://airflow:airflow@postgres:5432/datalake
 	# set up views schema in database
 	python3 setup_views.py
 

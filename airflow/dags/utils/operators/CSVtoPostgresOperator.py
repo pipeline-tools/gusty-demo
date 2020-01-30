@@ -4,8 +4,10 @@ import pandas as pd
 
 from airflow.models.baseoperator import BaseOperator
 from airflow.utils.decorators import apply_defaults
+from airflow.hooks.base_hook import BaseHook
 
-from .operator_utils.db_connections import get_datalake_engine
+from sqlalchemy import create_engine
+
 from .operator_utils.job_colors import job_colors
 
 from . import register_build
@@ -36,7 +38,7 @@ def import_csv(csv_file, table_name):
     csv_file = pd.read_csv(csv_path)
     csv_file = clean_columns(csv_file)
     csv_file.to_sql(name=table_name,
-                    con=get_datalake_engine(),
+                    con=create_engine(BaseHook.get_connection('postgres_datalake').get_uri()).connect(),
                     schema="views",
                     if_exists="replace",
                     index=False)

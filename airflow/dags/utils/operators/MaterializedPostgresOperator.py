@@ -3,12 +3,12 @@ import re
 
 from airflow.models.baseoperator import BaseOperator
 from airflow.utils.decorators import apply_defaults
+from airflow.hooks.base_hook import BaseHook
 
 from jinja2 import Template
 
 from sqlalchemy import create_engine
 
-from .operator_utils.db_connections import get_datalake_engine
 from .operator_utils.job_colors import job_colors
 
 from . import register_build
@@ -69,7 +69,7 @@ class MaterializedPostgresOperator(BaseOperator):
                              fields = self.fields)
         print("\n" + query)
 
-        conn = get_datalake_engine().connect()
+        conn = create_engine(BaseHook.get_connection('postgres_datalake').get_uri()).connect()
 
         try:
             conn.execute(query)
