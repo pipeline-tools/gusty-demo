@@ -2,7 +2,7 @@ import os
 import re
 import pandas as pd
 
-from airflow.contrib.operators.ssh_operator import SSHOperator
+from airflow.operators.bash_operator import BashOperator
 from airflow.utils.decorators import apply_defaults
 
 from .operator_utils.job_colors import job_colors
@@ -23,7 +23,7 @@ dags_dir = os.path.join(os.getenv('AIRFLOW_HOME'), "dags")
 ## Operators ##
 ###############
 
-class RmdOperator(SSHOperator):
+class RmdOperator(BashOperator):
     """
     The RmdOperator executes the R Markdown file. Note that it is up to the Rmd itself
     to handle connecting to the database.
@@ -31,16 +31,23 @@ class RmdOperator(SSHOperator):
     @apply_defaults
     def __init__(self, file_path, **kwargs):
         self.rmd_file = file_path
-        self.ui_color = job_colors["rmd"]
         self.html_output = file_path.replace('.Rmd', '.html')
+        self.user = os.environ['EZ_AF_USER']
+        self.rserver = os.environ['EZ_AF_R_SERVER']
+        self.ui_color = job_colors["rmd"]
 
-        # The volume is shared at the same location with the rserver container
-        self.command = ("Rscript -e 'library(methods); rmarkdown::render(\"%s\")' && rm -f %s" %
-        (self.rmd_file, self.html_output))
+        self.command = """(scp -o StrictHostKeyChecking=no {local_filepath} {user}@{rserver}:~/
+                           ssh -o StrictHostKeyChecking=no {user}@{rserver} 'Rscript /usr/render_rmd.R ~/{filepath_basename}';
+                           ssh -o StrictHostKeyChecking=no {user}@{rserver} 'rm ~/{filepath_basename} && rm ~/{html_output_basename}';
+                           )""".format(
+                           user = self.user,
+                           rserver = self.rserver,
+                           local_filepath = self.rmd_file,
+                           filepath_basename = os.path.basename(self.rmd_file),
+                           html_output_basename = os.path.basename(self.html_output))
 
         super(RmdOperator, self).__init__(
-            command = self.command,
-            ssh_conn_id = "ssh_rserver",
+            bash_command = self.command,
             **kwargs)
 
 ###################

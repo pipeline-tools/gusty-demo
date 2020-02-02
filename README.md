@@ -1,3 +1,42 @@
+# Quick Start
+
+Clone this repo to your local machine and get Airflow up and running locally in three easy steps:
+
+### 1: Edit Your Bash Profile
+
+Using your terminal, copy/paste the following into your bash profile:
+
+```
+export EZ_AF_USER=airflow
+export EZ_AF_PASSWORD=airflowpw
+export EZ_AF_R_SERVER=rserver
+export EZ_AF_PYTHON_SERVER=pythonserver
+export EZ_AF_META_DB=postgresql://${EZ_AF_USER}:${EZ_AF_PASSWORD}@postgres:5432/airflow
+export EZ_AF_DATALAKE=postgresql://${EZ_AF_USER}:${EZ_AF_PASSWORD}@postgres:5432/datalake
+```
+
+After saving these changes to your bash profile, remember to restart the terminal or open a new one.
+
+### 2: Build with `docker-compose`
+
+While in the ez-airflow directory, run the following command:
+
+```
+docker-compose build --build-arg EZ_AF_USER=$EZ_AF_USER --build-arg EZ_AF_PASSWORD=$EZ_AF_PASSWORD
+```
+
+If this is your first time building, the build will take several minutes.
+
+### 3: Stand up with `docker-compose`
+
+Finally, while in the ez-airflow directory, simply run:
+
+```
+docker-compose up
+```
+
+Airflow should be waiting for you at `localhost:8080`!
+
 # Overview
 
 The purpose of this repo is to provide a jumping-off point for others to use Airflow to set up their own data pipelines without having to configure Airflow from scratch.

@@ -1,8 +1,8 @@
 
 airflow_init:
 	airflow upgradedb
-	airflow connections -a --conn_id postgres_datalake --conn_uri postgresql://airflow:airflow@postgres:5432/datalake
-	# set up views schema in database
+	airflow variables -s EZ_AF_USER ${EZ_AF_USER}
+	airflow connections -a --conn_id postgres_datalake --conn_uri postgresql://${EZ_AF_USER}:${EZ_AF_PASSWORD}@postgres:5432/datalake
 	python3 setup_views.py
 
 airflow_up:
