@@ -85,6 +85,8 @@ The `.yml` approach to generating jobs within Airflow DAGs is not a new idea, bu
 
 - **Operator configuration** - After you build an operator, you can pass parameters to it in each `.yml` job definition file. This means that, for example, if you have to call different API endpoints, you may only need to build one operator to ingest data from this API, and then can specify the endpoint to call in the `.yml` job definition file.
 
+- **Support for popular notebook formats** - There are currently two operators, `RmdOperator` and `JupyterOperator`, which enable you to simply write RMarkdown or Jupyter Notebook files and deploy them as jobs in your data pipeline. More importantly, `RmdOperator` and `JupyterOperator` are actually executed on separate dedicated docker containers, and interact with the Airflow container via SSH, which is useful if you want to deploy these services separately in the cloud!
+
 # Setup
 
 ## Creating a DAG
