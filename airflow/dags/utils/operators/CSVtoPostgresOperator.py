@@ -27,8 +27,7 @@ csv_files = [os.path.join(csv_dir, file) for file in os.listdir(csv_dir) if file
 def clean_columns(df):
     df.columns = df.columns.str.strip()
     df.columns = df.columns.str.lower()
-    df.columns = df.columns.str.replace(" ", "_")
-    df.columns = df.columns.map(lambda x: re.sub('[^0-9a-zA-Z_]+', '', x))
+    df.columns = df.columns.map(lambda x: re.sub('[^0-9a-zA-Z_]+', '_', x))
     df.columns = df.columns.map(lambda x: re.sub('_+', '_', x))
     return df
 
