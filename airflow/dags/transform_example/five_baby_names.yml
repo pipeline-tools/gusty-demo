@@ -1,0 +1,10 @@
+operator: MaterializedPostgresOperator
+description: Five baby names from the ingest_example DAG's baby_names table
+fields:
+    - baby_name: a baby's first name
+external_dependencies:
+    - ingest_example: baby_names
+query: |-
+    SELECT DISTINCT childs_first_name AS baby_name
+    FROM views.baby_names
+    LIMIT 5

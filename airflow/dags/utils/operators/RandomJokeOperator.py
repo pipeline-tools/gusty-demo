@@ -45,7 +45,7 @@ class RandomJokeOperator(BaseOperator):
             self,
             **kwargs):
 
-        self.ui_color = job_colors["import"]
+        self.ui_color = job_colors["api"]
         super(RandomJokeOperator, self).__init__(**kwargs)
 
     def execute(self, context):

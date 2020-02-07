@@ -30,11 +30,16 @@ def render_query(**kwargs):
         -- Replace query
         ALTER TABLE views.{{ task_id }}_tmp RENAME TO {{ task_id }};
 
+        -- Table description
+        {% if description %}
+            COMMENT ON TABLE views.{{ task_id }} IS '{{ description | replace("\'", "\'\'") }}';
+        {% endif %}
+
+        -- Field descriptions
         {% if fields %}
-        -- Table comments
         {% for field in fields %}
         {% for field_name, field_description in field.items() %}
-            COMMENT ON COLUMN views.{{ task_id }}."{{ field_name }}" IS '{{ field_description }}';
+            COMMENT ON COLUMN views.{{ task_id }}."{{ field_name }}" IS '{{ field_description | replace("\'", "\'\'") }}';
         {% endfor %}
         {% endfor %}
         {% endif %}
@@ -60,13 +65,15 @@ class MaterializedPostgresOperator(BaseOperator):
 
         self.query = kwargs["query"]
         self.fields = kwargs["fields"]
+        self.description = kwargs["description"]
         self.ui_color = job_colors["sql"]
         super(MaterializedPostgresOperator, self).__init__(**kwargs)
 
     def execute(self, context):
         query = render_query(task_id = self.task_id,
                              query = self.query,
-                             fields = self.fields)
+                             fields = self.fields,
+                             description = self.description)
         print("\n" + query)
 
         conn = create_engine(BaseHook.get_connection('postgres_datalake').get_uri()).connect()
@@ -85,7 +92,8 @@ def build_materialized_postgres_operator(**kwargs):
         task_id=kwargs["spec"]["task_id"],
         dag=kwargs["dag"],
         query = kwargs["spec"]["query"],
-        fields = kwargs["spec"]["fields"] if "fields" in dict(kwargs["spec"]).keys() else None
+        fields = kwargs["spec"]["fields"] if "fields" in dict(kwargs["spec"]).keys() else None,
+        description = kwargs["spec"]["description"] if "description" in dict(kwargs["spec"]).keys() else None
         )
     return task
 

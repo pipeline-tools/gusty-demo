@@ -17,10 +17,10 @@ dag_name = os.path.splitext(os.path.basename(__file__))[0]
 ##################
 
 default_args = {
-    'owner': 'Chris',
+    'owner': 'You',
     'depends_on_past': False,
     'start_date': days_ago(1),
-    'email': ['hipsterlogic23@gmail.com'],
+    'email': ['your_email@gmail.com'],
     'email_on_failure': False,
     'email_on_retry': False,
     'retries': 1,

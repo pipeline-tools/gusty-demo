@@ -57,7 +57,7 @@ class CSVtoPostgresOperator(BaseOperator):
             **kwargs):
 
         self.csv_file = kwargs["csv_file"]
-        self.ui_color = job_colors["import"]
+        self.ui_color = job_colors["local_file"]
         super(CSVtoPostgresOperator, self).__init__(**kwargs)
 
     def execute(self, context):

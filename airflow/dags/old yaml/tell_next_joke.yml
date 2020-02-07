@@ -1,7 +1,0 @@
-operator: PythonOperator
-python_callable: random_joke
-op_kwargs:
-    test_op_kwargs: test_op_kwargs
-dependencies:
-    - consider_next_joke_1
-    - consider_next_joke_2

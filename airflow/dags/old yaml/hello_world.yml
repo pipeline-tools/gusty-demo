@@ -1,5 +1,0 @@
-operator: PythonOperator
-python_callable: hello_mr_dag
-op_kwargs:
-    name: Mr. Sir
-    words: Mr. Sir
