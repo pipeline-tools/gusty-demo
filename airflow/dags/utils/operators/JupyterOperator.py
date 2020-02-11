@@ -37,8 +37,8 @@ class JupyterOperator(BashOperator):
         self.ui_color = job_colors["ipynb"]
 
         self.command = """(scp -o StrictHostKeyChecking=no {local_filepath} {user}@{pythonserver}:~/
-                           ssh -o StrictHostKeyChecking=no {user}@{pythonserver} 'jupyter nbconvert --execute ~/{filepath_basename}' || exit 1;
-                           ssh -o StrictHostKeyChecking=no {user}@{pythonserver} 'rm ~/{filepath_basename} && rm ~/{html_output_basename}';
+                           ssh -o StrictHostKeyChecking=no {user}@{pythonserver} 'jupytext --execute ~/{filepath_basename}' || exit 1;
+                           ssh -o StrictHostKeyChecking=no {user}@{pythonserver} 'rm ~/{filepath_basename} && rm -f ~/{html_output_basename}';
                            )""".format(
                            user = self.user,
                            pythonserver = self.pythonserver,

@@ -30,6 +30,7 @@ RUN sudo echo 'PasswordAuthentication yes' >> /etc/ssh/sshd_config
 
 # Install libraries
 RUN pip install jupyter
+RUN pip install jupytext
 RUN pip install pandas
 #RUN pip install siuba
 
