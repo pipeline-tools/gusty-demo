@@ -1,0 +1,14 @@
+---
+operator: RmdOperator
+dependencies:
+    - simple_bash
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r hello_world}
+# Any R code can go here; potentially code that connects to your datalake
+print("hello, world")
+```

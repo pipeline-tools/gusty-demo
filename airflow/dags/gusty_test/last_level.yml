@@ -1,0 +1,6 @@
+operator: BashOperator
+dependencies:
+    - anotha_one
+external_dependencies:
+    - ingest_example: iris
+bash_command: echo 'hello world'
