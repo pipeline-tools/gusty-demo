@@ -138,3 +138,4 @@ logs
 # Using this as Rproj for convenience
 ez-airflow.Rproj
 .Rproj.user
+airflow/dags/gusty
