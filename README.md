@@ -1,3 +1,7 @@
+This offers a demo of the [gusty package](https://github.com/chriscardillo/gusty): an opinionated framework for data ETL built on top of [Airflow](https://airflow.apache.org/).
+
+It includes several example DAGs, as well as the Docker infrastructure for you to set up Airflow quickly yourself.
+
 # Quick Start
 
 Clone this repo to your local machine and get Airflow up and running locally in three easy steps:
@@ -9,10 +13,6 @@ Using your terminal, copy/paste the following into your bash profile:
 ```
 export EZ_AF_USER=airflow
 export EZ_AF_PASSWORD=airflowpw
-export EZ_AF_R_SERVER=rserver
-export EZ_AF_PYTHON_SERVER=pythonserver
-export EZ_AF_META_DB=postgresql://${EZ_AF_USER}:${EZ_AF_PASSWORD}@postgres:5432/airflow
-export EZ_AF_DATALAKE=postgresql://${EZ_AF_USER}:${EZ_AF_PASSWORD}@postgres:5432/datalake
 ```
 
 After saving these changes to your bash profile, remember to restart the terminal or open a new one.
@@ -39,17 +39,17 @@ Airflow should be waiting for you at `localhost:8080`!
 
 # Overview
 
-The purpose of this repo is to provide a jumping-off point for others to use Airflow to set up their own data pipelines without having to configure Airflow from scratch.
+The purpose of this repo is to provide a jumping-off point for others to use gusty and Airflow to set up their own data pipelines.
 
-The `ez-airflow` project has a few opinions:
+gusty has a few opinions:
 
-- Data pipelines empower data workers to do three things, two of which `ez-airflow` addresses:
+- Data pipelines empower data workers to do three things, two of which gusty addresses:
 
     1. **Ingesting data** - Data is ingested from different sources, through the use of user-defined operators. Ideally, one operator should be built to interface with one data source. This data is then stored in a central data warehouse. Ideally, each data source is stored in its own schema.
     2. **Transforming data** - Once raw data is ingested, it can be manipulated and rendered into **views**. These views are tables generated using a user-defined SQL operator. (In time, it would be nice to build in Python and R operators that could generate views, as well.) These views are stored back into the data warehouse, and it is ideal if these tables are stored in a schema named `views`. (In time, it would be nice to build in export tasks, that could export views to other destinations, like AWS S3.)
-    3. **Machine learning** - Once data has been formatted into views and stored, users should be able to run machine learning jobs to create predictive models meant for production needs. `ez-airflow` does not handle this yet.
+    3. **Machine learning** - Once data has been formatted into views and stored, users should be able to run machine learning jobs to create predictive models meant for production needs. gusty does not handle this yet.
 
-- The utilities provided in `ez-airflow` should be general enough for anyone to use. It is a foundation upon which individuals can build a data pipeline in Airflow that is suited for their specific needs.
+- The utilities provided in gusty should be general enough for anyone to use. It is a foundation upon which individuals can build a data pipeline in Airflow that is suited for their specific needs.
 
 - Jobs are defined using `.yml` files. For jobs that save to the data warehouse, **the name of the `.yml` file will be the name of the resulting table.**
 
@@ -58,22 +58,9 @@ The `ez-airflow` project has a few opinions:
     1. **A `.py` DAG definition file** - This defines the DAG. The DAG's name is determined by the file name.
     2. **A folder for `.yml` job definition files** - The folder should be named the same as its corresponding DAG definition file.
 
-- All operators:
+At this point in time, this project is built for PostgreSQL use cases, but in time can grow to include other database usecases.
 
-    - Are explicitly defined by users, and located in `airflow/dags/utils/operators`.
-    - Have their names defined by the `.py` file that contains their interface to Airflow.
-    - Use a four-part format:
-
-        1. **API** - Defines the functions that will be executed by the operator.
-        2. **Operator** - Defines the operator, which is built off of Airflow's BaseOperator, but could probably inheret other operator classes, as well.
-        3. **Builder** - Defines a function that builds the and returns the operator.
-        4. **Registration** - Registers the builder function to the app. This is done with the `register_build` function.
-
-If you are familiar with building Python applications, hopefully you will find this project useful for getting you started with Airflow.
-
-At this point and time, this project is built for PostgreSQL use cases, but in time can grow to include other database usecases.
-
-# Why use `ez-airflow`
+# Why use gusty
 
 The `.yml` approach to generating jobs within Airflow DAGs is not a new idea, but it is useful and there are a few built in benefits to it here.
 
@@ -83,7 +70,7 @@ The `.yml` approach to generating jobs within Airflow DAGs is not a new idea, bu
     2. Using the `external_dependencies` specification, you can set dependecies between jobs in different DAGs.
     3. For the `MaterializedPostgresOperator`, dependencies in the same DAG that are a part of the `views` schema are automatically registered.
 
-- **Operator configuration** - After you build an operator, you can pass parameters to it in each `.yml` job definition file. This means that, for example, if you have to call different API endpoints, you may only need to build one operator to ingest data from this API, and then can specify the endpoint to call in the `.yml` job definition file.
+- **Operator configuration** - You can pass parameters to any operator in each `.yml` job definition file. This means that, for example, if you have to call different API endpoints, you may only need to build one operator to ingest data from this API, and then can specify the endpoint to call in the `.yml` job definition file.
 
 - **Support for popular notebook formats** - There are currently two operators, `RmdOperator` and `JupyterOperator`, which enable you to simply write RMarkdown or Jupyter Notebook files and deploy them as jobs in your data pipeline. More importantly, `RmdOperator` and `JupyterOperator` are actually executed on separate dedicated docker containers, and interact with the Airflow container via SSH, which is useful if you want to deploy these services separately in the cloud!
 
