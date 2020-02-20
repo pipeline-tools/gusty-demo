@@ -1,10 +1,10 @@
 # Setup script to create the views schema in Postgres
 
-from airflow.hooks.base_hook import BaseHook
+from airflow.hooks.postgres_hook import PostgresHook
 from sqlalchemy_utils import create_database, database_exists
 import sqlalchemy
 
-engine = BaseHook.get_connection('postgres_default').get_engine()
+engine = PostgresHook.get_connection('postgres_default').get_engine()
 
 # create database
 if not database_exists(engine.url):
