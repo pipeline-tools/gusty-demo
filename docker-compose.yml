@@ -42,8 +42,7 @@ services:
 
                 # Install gusty (while in development)
                 # pip uninstall -y gusty
-                # cd /usr/local/airflow/dags/gusty && python setup.py build install && cd /usr/local/airflow
-                pip install --upgrade git+git://github.com/chriscardillo/gusty
+                # pip install --upgrade git+git://github.com/chriscardillo/gusty
 
                 # Clean up pid
                 rm -f airflow-webserver.pid

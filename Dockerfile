@@ -22,8 +22,9 @@ RUN if [ -z $EZ_AF_USER ]; then (printf "\033[1;31mERROR: EZ_AF_USER not include
 RUN if [ -z $EZ_AF_PASSWORD ]; then (printf "\033[1;31mERROR: EZ_AF_PASSWORD not included in build args. Include the arg in your build, \n       (e.g: 'docker-compose build --build-arg EZ_AF_PASSWORD=\$EZ_AF_PASSWORD')\033[0m\n"); exit; fi
 
 # Set up the SSH host
-RUN apt-get install -y ssh
+RUN apt-get update --fix-missing
 RUN apt-get install -y sudo
+RUN apt-get install -y ssh
 RUN apt-get install -y sshpass
 
 # Create user and password

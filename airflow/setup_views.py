@@ -4,7 +4,8 @@ from airflow.hooks.postgres_hook import PostgresHook
 from sqlalchemy_utils import create_database, database_exists
 import sqlalchemy
 
-engine = PostgresHook.get_connection('postgres_default').get_engine()
+uri = PostgresHook.get_connection('postgres_default').get_uri()
+engine = sqlalchemy.create_engine(uri)
 
 # create database
 if not database_exists(engine.url):
