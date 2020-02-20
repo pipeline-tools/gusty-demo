@@ -41,25 +41,17 @@ services:
                 sleep 5
 
                 # Install gusty (while in development)
-                # pip install --upgrade /usr/local/airflow/dags/gusty
                 # pip uninstall -y gusty
                 # cd /usr/local/airflow/dags/gusty && python setup.py build install && cd /usr/local/airflow
                 pip install --upgrade git+git://github.com/chriscardillo/gusty
 
-                # Sending over RSA keys
-                # sshpass -p ${EZ_AF_PASSWORD} ssh-copy-id -i /root/.ssh/id_rsa.pub -o StrictHostKeyChecking=no ${EZ_AF_USER}@${EZ_AF_PYTHON_SERVER}
-            	# sshpass -p ${EZ_AF_PASSWORD} ssh-copy-id -i /root/.ssh/id_rsa.pub -o StrictHostKeyChecking=no ${EZ_AF_USER}@${EZ_AF_R_SERVER}
-
                 # Clean up pid
                 rm -f airflow-webserver.pid
 
-                #Not currently using makefiles make airflow_init
                 airflow upgradedb
             	airflow variables -s EZ_AF_USER ${EZ_AF_USER}
-            	airflow connections -a --conn_id postgres_datalake --conn_uri ${EZ_AF_DATALAKE}
             	python3 setup_views.py
 
-                #Not currently using makefiles airflow_up
                 airflow scheduler &
             	airflow webserver
 

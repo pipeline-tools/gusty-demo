@@ -1,3 +1,4 @@
+# Not currently used!
 
 airflow_init:
 	airflow upgradedb
