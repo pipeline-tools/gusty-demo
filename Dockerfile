@@ -33,5 +33,8 @@ RUN sudo echo "${EZ_AF_USER}:${EZ_AF_PASSWORD}" | sudo chpasswd
 # Generate Key
 RUN ssh-keygen -N '' -f $HOME/.ssh/id_rsa
 
+# Set up git
+RUN apt-get install -y git
+
 # Set wd
 WORKDIR /usr/local/airflow

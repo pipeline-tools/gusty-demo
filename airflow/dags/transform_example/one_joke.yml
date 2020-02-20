@@ -6,7 +6,7 @@ fields:
     - joke: "the Chuck Norris joke"
 external_dependencies:
     - ingest_example: random_chuck_norris_jokes
-query: |-
+sql: |-
     SELECT *
     FROM views.random_chuck_norris_jokes
     LIMIT 1

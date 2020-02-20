@@ -31,17 +31,24 @@ services:
         build:
             context: .
         environment:
-            - AIRFLOW__CORE__SQL_ALCHEMY_CONN=${EZ_AF_META_DB}
-            - EZ_AF_PYTHON_SERVER=${EZ_AF_PYTHON_SERVER}
-            - EZ_AF_R_SERVER=${EZ_AF_R_SERVER}
+            - AIRFLOW__CORE__SQL_ALCHEMY_CONN=postgresql://${EZ_AF_USER}:${EZ_AF_PASSWORD}@postgres:5432/airflow
+            - AIRFLOW_CONN_POSTGRES_DEFAULT=postgresql://${EZ_AF_USER}:${EZ_AF_PASSWORD}@postgres:5432/datalake
+            - AIRFLOW_CONN_PYTHONSERVER_DEFAULT=ssh://${EZ_AF_USER}:${EZ_AF_PASSWORD}@pythonserver?no_host_key_check=true
+            - AIRFLOW_CONN_RSERVER_DEFAULT=ssh://${EZ_AF_USER}:${EZ_AF_PASSWORD}@rserver?no_host_key_check=true
         command: >
             /bin/bash -c "
                 # Wait for PG
                 sleep 5
 
+                # Install gusty (while in development)
+                # pip install --upgrade /usr/local/airflow/dags/gusty
+                # pip uninstall -y gusty
+                # cd /usr/local/airflow/dags/gusty && python setup.py build install && cd /usr/local/airflow
+                pip install --upgrade git+git://github.com/chriscardillo/gusty
+
                 # Sending over RSA keys
-                sshpass -p ${EZ_AF_PASSWORD} ssh-copy-id -i /root/.ssh/id_rsa.pub -o StrictHostKeyChecking=no ${EZ_AF_USER}@${EZ_AF_PYTHON_SERVER}
-            	sshpass -p ${EZ_AF_PASSWORD} ssh-copy-id -i /root/.ssh/id_rsa.pub -o StrictHostKeyChecking=no ${EZ_AF_USER}@${EZ_AF_R_SERVER}
+                # sshpass -p ${EZ_AF_PASSWORD} ssh-copy-id -i /root/.ssh/id_rsa.pub -o StrictHostKeyChecking=no ${EZ_AF_USER}@${EZ_AF_PYTHON_SERVER}
+            	# sshpass -p ${EZ_AF_PASSWORD} ssh-copy-id -i /root/.ssh/id_rsa.pub -o StrictHostKeyChecking=no ${EZ_AF_USER}@${EZ_AF_R_SERVER}
 
                 # Clean up pid
                 rm -f airflow-webserver.pid

@@ -2,7 +2,7 @@ operator: MaterializedPostgresOperator
 description: Just a job to illustrate automatic table dependencies for SQL jobs
 fields:
     - column_name: An arbitrary column name for this example
-query: |-
+sql: |-
     SELECT joke AS column_name
     FROM views.one_joke
     UNION ALL

@@ -4,13 +4,14 @@ from datetime import datetime, timedelta
 from airflow import DAG
 from airflow.utils.dates import days_ago
 
-from utils.taskmaker import *
+from gusty import *
 
 ##############
-## DAG Name ##
+## DAG Info ##
 ##############
 
-dag_name = os.path.splitext(os.path.basename(__file__))[0]
+dag_directory = os.path.splitext(os.path.abspath(__file__))[0]
+dag_name = os.path.basename(dag_directory)
 
 ##################
 ## Default Args ##
@@ -41,6 +42,4 @@ dag = DAG(
 ## Tasks ##
 ###########
 
-yaml_specs = get_yaml_specs(dag_name=dag_name)
-tasks = build_tasks(yaml_specs, dag=dag)
-set_dependencies(yaml_specs, tasks, dag=dag)
+build_dag(dag_directory, dag)
