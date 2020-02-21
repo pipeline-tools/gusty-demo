@@ -49,9 +49,9 @@ Airflow's operators, gusty's operators, and any custom operators a user may crea
 
 Dependencies can quickly be set in `.yml` files through one of three means:
 
-    1. Using the `dependencies` specification, you can set dependencies between jobs in the same DAG.
-    2. Using the `external_dependencies` specification, you can set dependecies between jobs in different DAGs.
-    3. For gusty's `MaterializedPostgresOperator`, dependencies in the same DAG that are a part of a `views` schema are automatically registered.
+1. Using the `dependencies` specification, you can set dependencies between jobs in the same DAG.
+2. Using the `external_dependencies` specification, you can set dependecies between jobs in different DAGs.
+3. For gusty's `MaterializedPostgresOperator`, dependencies in the same DAG that are a part of a `views` schema are automatically registered.
 
 ## Notebook support
 
