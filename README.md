@@ -83,7 +83,7 @@ Let's say you have a `.py` DAG definition file, `airflow/dags/my_awesome_dag.py`
 There is a .csv file we could bring into our warehouse, `airflow/dags/csv/baby_names.csv`. To do this, we will make a new `.yml` task definition file, `airflow/dags/my_awesome_dag/baby_names.yml`. This `.yml` file must include an `operator` parameter, to specify that we will be using the `CSVtoPostgresOperator`, and a `csv_file` parameter to specify the .csv file we will be uploading to our data warehouse:
 
 ```yaml
-operator: CSVtoPostgresOperator
+operator: CSVToPostgresOperator
 csv_file: baby_names.csv
 ```
 
@@ -119,17 +119,17 @@ Now, when the my_awesome_dag DAG runs, it will identify the above job, read the 
 
 Now for a quick overview of gusty's operators.
 
-## CSVtoPostgresOperator
+## CSVToPostgresOperator
 
 - Required Parameters:
 
-    - **operator** - Specifies the operator we'll be using. Set to `CSVtoPostgresOperator`.
+    - **operator** - Specifies the operator we'll be using. Set to `CSVToPostgresOperator`.
     - **csv_file** - Specifies the file we'll be uploading. Set to the desired csv file located inside the `airflow/dags/csv` folder.
 
 Example file:
 
 ```yaml
-operator: CSVtoPostgresOperator
+operator: CSVToPostgresOperator
 csv_file: baby_names.csv
 ```
 
