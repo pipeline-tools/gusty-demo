@@ -70,6 +70,8 @@ DAG definition files, such as `ingest_example.py` and `transform_example.py` do 
 - The example DAGs are currently set to run once a day. You can change this interval using the `schedule_interval` parameter in the DAG instantiation, around line 35.
 - Note that gusty's `build_dag` function simply needs a path to where the job spec (`.yml`, `.Rmd`, etc.) files are located, and the DAG object itself.
 
+Also note that, by default, gusty's `build_dag` defaults to building [latest only](https://airflow.apache.org/docs/stable/concepts.html#latest-run-only) dags. You can alter this behavior by passing the argument `latest_only=False` to the `build_dag` function.
+
 ### Task files folder
 
 Assuming you copy/pasted an existing `.py` DAG defintion file, it will be expected that this `.py` DAG definition file has a corresponding folder of the same name, which contains your job specs. Task files, which will be covered below, are generally `.yml` files that contain parameters that tell gusty what jobs to create.
@@ -111,9 +113,21 @@ Additionally the format `dag_name: all` can be used to specify to wait for an en
 
 Now, when the my_awesome_dag DAG runs, it will identify the above job, read the .csv, and upload it to your data warehouse. Note that the name of your tasks becomes the name of the resulting table in your data warehouse.
 
-## Creating a new operator
+## Creating a custom operator
 
-(To Add Later)
+gusty will register any operators located in an `operators` folder in the airflow home directory, in our case `airflow/operators`. These operators can then be included in YAML specs just like any others.
+
+It is imperative that your file name uses `snake_case` and your operator uses `camelCase`.
+
+Conslut [Airflow documentation on creating custom operators](https://airflow.apache.org/docs/stable/howto/custom-operator.html) to generate your own operators.
+
+Note that if you are going to be using new parameters for a custom operator, and your custom operator class inherits from an existing Airflow operator, it is important for your custom operators to include a line like:
+
+```python
+template_fields = ParentClass.template_fields + ["additional_field"]
+```
+
+You can check out a custom operator at [airflow/operators/random_joke_operator.py](https://github.com/chriscardillo/gusty-demo/blob/master/airflow/operators/random_joke_operator.py). Note this operator uniquely does not have an explict `execute` method (as is required according to [Airflow documentation on creating custom operators](https://airflow.apache.org/docs/stable/howto/custom-operator.html)). This is because of a neat feature of [gusty's `PythonToPostgresOperator`](https://github.com/chriscardillo/gusty/blob/master/gusty/operators/python_to_postgres_operator.py) . Your custom operator most likely will need an `execute` method.
 
 # Gusty Operators
 
@@ -132,6 +146,8 @@ Example file:
 operator: CSVToPostgresOperator
 csv_file: baby_names.csv
 ```
+
+You can check out a `CSVToPostgresOperator` at [airflow/dags/ingest_example/baby_names.yml](https://github.com/chriscardillo/gusty-demo/blob/master/airflow/dags/ingest_example/baby_names.yml)
 
 ## MaterializedPostgresOperator
 
@@ -166,6 +182,8 @@ query: |-
     FROM views.baby_names
 ```
 
+You can check out a `MaterializedPostgresOperator` at [airflow/dags/transform_example/five_baby_names.yml](https://github.com/chriscardillo/gusty-demo/blob/master/airflow/dags/transform_example/five_baby_names.yml)
+
 ## RmdOperator
 
 To use R in your data pipeline, you can use the `RmdOperator`. This operator assumes that there is an external R server on which to run R tasks. It expects an airflow connection, `rserver_default`, which is an ssh connection string. In this demo, we use a docker container, `rserver` to run R tasks. The connection to the R server is specified in `docker-compose.yml`, under `AIRFLOW_CONN_RSERVER_DEFAULT`.
@@ -180,6 +198,8 @@ To use R in your data pipeline, you can use the `RmdOperator`. This operator ass
     - **external_dependencies** - Covered above.
 
 You can write any R code you want here, so long as your R server supports it. Check out the `rserver` directory for more information the docker image and installing packages.
+
+You can check out an `RmdOperator` at [airflow/dags/transform_example/rmd_example.Rmd](https://github.com/chriscardillo/gusty-demo/blob/master/airflow/dags/transform_example/rmd_example.Rmd)
 
 ## JupyterOperator
 
@@ -202,3 +222,5 @@ As with all other operators, here are the parameters that are taken:
     - **external_dependencies** - Covered above.
 
 You can write any Python code you want here, so long as your Python server supports it. Check out the `pythonserver` directory for more information the docker image and installing packages.
+
+You can check out a `JupyterOperator` using a Jupyter Notebook at [airflow/dags/transform_example/jupyter_example.ipynb](https://github.com/chriscardillo/gusty-demo/blob/master/airflow/dags/transform_example/jupyter_example.ipynb) and a `JupyterOperator` using a different markdown file at [airflow/dags/transform_example/all_markdown_example.Rmd](https://github.com/chriscardillo/gusty-demo/blob/master/airflow/dags/transform_example/all_markdown_example.Rmd)
