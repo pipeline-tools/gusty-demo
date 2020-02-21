@@ -11,25 +11,25 @@ Clone this repo to your local machine and get Airflow up and running locally in 
 Using your terminal, copy/paste the following into your bash profile:
 
 ```
-export EZ_AF_USER=airflow
-export EZ_AF_PASSWORD=airflowpw
+export GUSTY_USER=gusty
+export GUSTY_PASSWORD=rules
 ```
 
 After saving these changes to your bash profile, remember to restart the terminal or open a new one.
 
 ### 2: Build with `docker-compose`
 
-While in the ez-airflow directory, run the following command:
+While in the gusty-demo directory, run the following command:
 
 ```
-docker-compose build --build-arg EZ_AF_USER=$EZ_AF_USER --build-arg EZ_AF_PASSWORD=$EZ_AF_PASSWORD
+docker-compose build --build-arg GUSTY_USER=$GUSTY_USER --build-arg GUSTY_PASSWORD=$GUSTY_PASSWORD
 ```
 
 If this is your first time building, the build will take several minutes.
 
 ### 3: Stand up with `docker-compose`
 
-Finally, while in the ez-airflow directory, simply run:
+Finally, while in the gusty-demo directory, simply run:
 
 ```
 docker-compose up

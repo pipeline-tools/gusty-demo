@@ -12,14 +12,14 @@ RUN pip install -r requirements.txt
 ENV AIRFLOW_HOME='/usr/local/airflow'
 
 # Take in args and set env
-ARG EZ_AF_USER
-ARG EZ_AF_PASSWORD
-ENV EZ_AF_USER=$EZ_AF_USER
-ENV EZ_AF_PASSWORD=$EZ_AF_PASSWORD
+ARG GUSTY_USER
+ARG GUSTY_PASSWORD
+ENV GUSTY_USER=$GUSTY_USER
+ENV GUSTY_PASSWORD=$GUSTY_PASSWORD
 
 # Check for required args
-RUN if [ -z $EZ_AF_USER ]; then (printf "\033[1;31mERROR: EZ_AF_USER not included in build args. Include the arg in your build, \n       (e.g: 'docker-compose build --build-arg EZ_AF_USER=\$EZ_AF_USER')\033[0m\n"); exit 1; fi
-RUN if [ -z $EZ_AF_PASSWORD ]; then (printf "\033[1;31mERROR: EZ_AF_PASSWORD not included in build args. Include the arg in your build, \n       (e.g: 'docker-compose build --build-arg EZ_AF_PASSWORD=\$EZ_AF_PASSWORD')\033[0m\n"); exit; fi
+RUN if [ -z $GUSTY_USER ]; then (printf "\033[1;31mERROR: GUSTY_USER not included in build args. Include the arg in your build, \n       (e.g: 'docker-compose build --build-arg GUSTY_USER=\$GUSTY_USER')\033[0m\n"); exit 1; fi
+RUN if [ -z $GUSTY_PASSWORD ]; then (printf "\033[1;31mERROR: GUSTY_PASSWORD not included in build args. Include the arg in your build, \n       (e.g: 'docker-compose build --build-arg GUSTY_PASSWORD=\$GUSTY_PASSWORD')\033[0m\n"); exit; fi
 
 # Set up the SSH host
 RUN apt-get update --fix-missing
@@ -28,8 +28,8 @@ RUN apt-get install -y ssh
 RUN apt-get install -y sshpass
 
 # Create user and password
-RUN sudo useradd ${EZ_AF_USER} -m -s /bin/bash
-RUN sudo echo "${EZ_AF_USER}:${EZ_AF_PASSWORD}" | sudo chpasswd
+RUN sudo useradd ${GUSTY_USER} -m -s /bin/bash
+RUN sudo echo "${GUSTY_USER}:${GUSTY_PASSWORD}" | sudo chpasswd
 
 # Generate Key
 RUN ssh-keygen -N '' -f $HOME/.ssh/id_rsa

@@ -3,8 +3,8 @@ services:
     postgres:
         image: postgres:9.6
         environment:
-            - POSTGRES_USER=${EZ_AF_USER}
-            - POSTGRES_PASSWORD=${EZ_AF_PASSWORD}
+            - POSTGRES_USER=${GUSTY_USER}
+            - POSTGRES_PASSWORD=${GUSTY_PASSWORD}
             - POSTGRES_DB=airflow
         ports:
             - "5430:5432"
@@ -31,10 +31,10 @@ services:
         build:
             context: .
         environment:
-            - AIRFLOW__CORE__SQL_ALCHEMY_CONN=postgresql://${EZ_AF_USER}:${EZ_AF_PASSWORD}@postgres:5432/airflow
-            - AIRFLOW_CONN_POSTGRES_DEFAULT=postgresql://${EZ_AF_USER}:${EZ_AF_PASSWORD}@postgres:5432/datalake
-            - AIRFLOW_CONN_PYTHONSERVER_DEFAULT=ssh://${EZ_AF_USER}:${EZ_AF_PASSWORD}@pythonserver?no_host_key_check=true
-            - AIRFLOW_CONN_RSERVER_DEFAULT=ssh://${EZ_AF_USER}:${EZ_AF_PASSWORD}@rserver?no_host_key_check=true
+            - AIRFLOW__CORE__SQL_ALCHEMY_CONN=postgresql://${GUSTY_USER}:${GUSTY_PASSWORD}@postgres:5432/airflow
+            - AIRFLOW_CONN_POSTGRES_DEFAULT=postgresql://${GUSTY_USER}:${GUSTY_PASSWORD}@postgres:5432/datalake
+            - AIRFLOW_CONN_PYTHONSERVER_DEFAULT=ssh://${GUSTY_USER}:${GUSTY_PASSWORD}@pythonserver?no_host_key_check=true
+            - AIRFLOW_CONN_RSERVER_DEFAULT=ssh://${GUSTY_USER}:${GUSTY_PASSWORD}@rserver?no_host_key_check=true
         command: >
             /bin/bash -c "
                 # Wait for PG
@@ -48,7 +48,7 @@ services:
                 rm -f airflow-webserver.pid
 
                 airflow upgradedb
-            	airflow variables -s EZ_AF_USER ${EZ_AF_USER}
+            	airflow variables -s GUSTY_USER ${GUSTY_USER}
             	python3 setup_views.py
 
                 airflow scheduler &
