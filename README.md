@@ -92,7 +92,9 @@ csv_file: baby_names.csv
 Gusty uses task defintion files to identify dependencies in three ways:
 
   1. Using the `dependencies` specification, you can set dependencies between jobs in the same DAG.
+
   2. Using the `external_dependencies` specification, you can set dependecies between jobs in different DAGs.
+
   3. For gusty's `MaterializedPostgresOperator`, dependencies in the same DAG that are a part of the `views` schema are automatically registered.
 
 ### Using `dependencies`
