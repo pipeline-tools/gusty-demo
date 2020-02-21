@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 from airflow import DAG
 from airflow.utils.dates import days_ago
 
-from gusty import *
+from gusty import build_dag
 
 ##############
 ## DAG Info ##
@@ -42,5 +42,4 @@ dag = DAG(
 ## Tasks ##
 ###########
 
-print(dag_directory)
 build_dag(dag_directory, dag)

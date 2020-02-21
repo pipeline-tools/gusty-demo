@@ -1,4 +1,0 @@
-operator: BashOperator
-dependencies:
-    - simple_bash
-bash_command: echo 'anotha one'

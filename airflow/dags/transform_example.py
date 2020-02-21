@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 from airflow import DAG
 from airflow.utils.dates import days_ago
 
-from gusty import *
+from gusty import build_dag
 
 ##############
 ## DAG Info ##
