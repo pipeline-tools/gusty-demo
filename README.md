@@ -37,79 +37,87 @@ docker-compose up
 
 Airflow should be waiting for you at `localhost:8080`!
 
-# Overview
-
-The purpose of this repo is to provide a jumping-off point for others to use gusty and Airflow to set up their own data pipelines.
-
-gusty has a few opinions:
-
-- Data pipelines empower data workers to do three things, two of which gusty addresses:
-
-    1. **Ingesting data** - Data is ingested from different sources, through the use of user-defined operators. Ideally, one operator should be built to interface with one data source. This data is then stored in a central data warehouse. Ideally, each data source is stored in its own schema.
-    2. **Transforming data** - Once raw data is ingested, it can be manipulated and rendered into **views**. These views are tables generated using a user-defined SQL operator. (In time, it would be nice to build in Python and R operators that could generate views, as well.) These views are stored back into the data warehouse, and it is ideal if these tables are stored in a schema named `views`. (In time, it would be nice to build in export tasks, that could export views to other destinations, like AWS S3.)
-    3. **Machine learning** - Once data has been formatted into views and stored, users should be able to run machine learning jobs to create predictive models meant for production needs. gusty does not handle this yet.
-
-- The utilities provided in gusty should be general enough for anyone to use. It is a foundation upon which individuals can build a data pipeline in Airflow that is suited for their specific needs.
-
-- Jobs are defined using `.yml` files. For jobs that save to the data warehouse, **the name of the `.yml` file will be the name of the resulting table.**
-
-- All DAGs have two items in the `airflow/dags` folder:
-
-    1. **A `.py` DAG definition file** - This defines the DAG. The DAG's name is determined by the file name.
-    2. **A folder for `.yml` job definition files** - The folder should be named the same as its corresponding DAG definition file.
-
-At this point in time, this project is built for PostgreSQL use cases, but in time can grow to include other database usecases.
-
 # Why use gusty
 
-The `.yml` approach to generating jobs within Airflow DAGs is not a new idea, but it is useful and there are a few built in benefits to it here.
+In short, gusty enables users to construct DAGs using YAML. The three big benefits to using gusty are:
 
-- **Dependencies** - Dependencies can quickly be set in `.yml` files through one of three means:
+## Operator configuration
+
+Airflow's operators, gusty's operators, and any custom operators a user may create are able to be accessed and associated with individual tasks using a YAML spec. Essentially, ever parameter of a specific task can be defined in the YAML spec. This means you never have to define a task manually again.
+
+## Dependency setting
+
+Dependencies can quickly be set in `.yml` files through one of three means:
 
     1. Using the `dependencies` specification, you can set dependencies between jobs in the same DAG.
     2. Using the `external_dependencies` specification, you can set dependecies between jobs in different DAGs.
-    3. For the `MaterializedPostgresOperator`, dependencies in the same DAG that are a part of the `views` schema are automatically registered.
+    3. For gusty's `MaterializedPostgresOperator`, dependencies in the same DAG that are a part of a `views` schema are automatically registered.
 
-- **Operator configuration** - You can pass parameters to any operator in each `.yml` job definition file. This means that, for example, if you have to call different API endpoints, you may only need to build one operator to ingest data from this API, and then can specify the endpoint to call in the `.yml` job definition file.
+## Notebook support
 
-- **Support for popular notebook formats** - There are currently two operators, `RmdOperator` and `JupyterOperator`, which enable you to simply write RMarkdown or Jupyter Notebook files and deploy them as jobs in your data pipeline. More importantly, `RmdOperator` and `JupyterOperator` are actually executed on separate dedicated docker containers, and interact with the Airflow container via SSH, which is useful if you want to deploy these services separately in the cloud!
+There are currently two operators, `RmdOperator` and `JupyterOperator`, which enable you to simply write RMarkdown or Jupyter Notebook files and deploy them as jobs in your data pipeline. Notably, `RmdOperator` and `JupyterOperator` are actually executed on separate dedicated docker containers, and interact with the Airflow container via SSH, which is useful if you want to deploy these services separately in the cloud!
 
 # Setup
 
 ## Creating a DAG
 
-In just a few steps, you can create a new dag:
+### DAG definition file
 
-- Copy one of the `.py` files in the `airflow/dags` folder.
-- Change the name of the `.py` file to whatever you want your DAG to be called.
+DAG definition files, such as `ingest_example.py` and `transform_example.py` do not contain too much information. If you wanted, you could just copy/paste one of these files, change the filename to what you want your DAG to be called, and be on your way.
+
+- Copy one of the `.py` files in the `airflow/dags` folder and change the name of the `.py` file to whatever you want your DAG to be called.
 - Within the `.py` file, change the `owner` and `email` owners in the `default_args` dict, around lines 20 to 30. (Email notications are currently turned off by default.)
-- DAGs are currently set to run once a day. You can change this interval using the `schedule_interval` parameter in the DAG instantiation, around line 35.
+- The example DAGs are currently set to run once a day. You can change this interval using the `schedule_interval` parameter in the DAG instantiation, around line 35.
+- Note that gusty's `build_dag` function simply needs a path to where the job spec (`.yml`, `.Rmd`, etc.) files are located, and the DAG object itself.
 
-Once you've done this, you'll want to create a folder inside of `airflow/dags` for your `.yml` job definition files. Two notes here:
+### Task files folder
 
-- ***Your folder must be named exactly the same as your DAG definition file. If you DAG is defined in `airflow/dags/my_awesome_dag.py`, then you must have a folder `airflow/dags/my_awesome_dag` to house your `.yml` job definition files.***
-- There is a `airflow/dags/csv` folder that does not correspond to a specifc DAG file. This folder is meant to house any .csv files you want to import to your data warehouse. These .csv files can be ingested using the `CSVtoPostgresOperator`, which will be covered later.
+Assuming you copy/pasted an existing `.py` DAG defintion file, it will be expected that this `.py` DAG definition file has a corresponding folder of the same name, which contains your job specs. Task files, which will be covered below, are generally `.yml` files that contain parameters that tell gusty what jobs to create.
+
+One important note is that there is a `airflow/dags/csv` folder that does not correspond to a specifc DAG file. This folder is meant to house any .csv files you want to import to your data warehouse. These .csv files can be ingested using gusty's `CSVtoPostgresOperator`, which will be covered later.
 
 ## Creating a new job
 
-Using the example above, you now have a definition file, `airflow/dags/my_awesome_dag.py`, and a folder for your jobs, `airflow/dags/my_awesome_dag`. Let's put a job in this DAG.
+Let's say you have a `.py` DAG definition file, `airflow/dags/my_awesome_dag.py`, and a folder for your tasks, `airflow/dags/my_awesome_dag`. Let's put a job in this DAG.
 
-There is a .csv file we could bring into our warehouse, `airflow/dags/csv/baby_names.csv`. To do this, we will make a new `.yml` job definition file, `airflow/dags/my_awesome_dag/baby_names.yml`. This `.yml` file must include an `operator` parameter, to specify that we will be using the `CSVtoPostgresOperator`, and a `csv_file` parameter to specify the .csv file we will be uploading to our data warehouse:
+There is a .csv file we could bring into our warehouse, `airflow/dags/csv/baby_names.csv`. To do this, we will make a new `.yml` task definition file, `airflow/dags/my_awesome_dag/baby_names.yml`. This `.yml` file must include an `operator` parameter, to specify that we will be using the `CSVtoPostgresOperator`, and a `csv_file` parameter to specify the .csv file we will be uploading to our data warehouse:
 
 ```yaml
 operator: CSVtoPostgresOperator
 csv_file: baby_names.csv
 ```
 
-Now, when the my_awesome_dag DAG runs, it will identify the above job, read the .csv, and upload it to the data warehouse. Neat.
+## Specifying Dependencies
+
+Gusty uses task defintion files to identify dependencies in three ways:
+
+  1. Using the `dependencies` specification, you can set dependencies between jobs in the same DAG.
+  2. Using the `external_dependencies` specification, you can set dependecies between jobs in different DAGs.
+  3. For gusty's `MaterializedPostgresOperator`, dependencies in the same DAG that are a part of the `views` schema are automatically registered.
+
+### Using `dependencies`
+
+Each entry should start with a hypen (`-`) and the job name.
+
+### Using `external_dependencies`
+
+Each entry should start with a hypen (`-`) and follow the format `dag_name: job_name`. This will create an external task sensor to wait for a job in the other DAG.
+
+Additionally the format `dag_name: all` can be used to specify to wait for an entire DAG to complete before another DAG runs.
+
+### Auto-dependencies in `MaterializedPostgresOperator`
+
+`MaterializedPostgresOperator` jobs will also parse the query to identify any tables that start with `views.`, check if those tables are in the local DAG, and set those dependencies automatically.
+
+Now, when the my_awesome_dag DAG runs, it will identify the above job, read the .csv, and upload it to your data warehouse. Note that the name of your tasks becomes the name of the resulting table in your data warehouse.
 
 ## Creating a new operator
 
 (To Add Later)
 
-# Descriptions of Operators
+# Gusty Operators
 
-Now for a quick overview of the two useful general operators that have been built out so far, the `CSVtoPostgresOperator` and the `MaterializedPostgresOperator`.
+Now for a quick overview of gusty's operators.
 
 ## CSVtoPostgresOperator
 
@@ -158,24 +166,39 @@ query: |-
     FROM views.baby_names
 ```
 
-# Specifying Dependencies
+## RmdOperator
 
-As mentioned above, dependencies are identified by three means:
+To use R in your data pipeline, you can use the `RmdOperator`. This operator assumes that there is an external R server on which to run R tasks. It expects an airflow connection, `rserver_default`, which is an ssh connection string. In this demo, we use a docker container, `rserver` to run R tasks. The connection to the R server is specified in `docker-compose.yml`, under `AIRFLOW_CONN_RSERVER_DEFAULT`.
 
-  1. Using the `dependencies` specification, you can set dependencies between jobs in the same DAG.
-  2. Using the `external_dependencies` specification, you can set dependecies between jobs in different DAGs.
-  3. For the `MaterializedPostgresOperator`, dependencies in the same DAG that are a part of the `views` schema are automatically registered.
+- Required Parameters:
 
-## Using `dependencies`
+    - **operator** - Specifies the operator we'll be using. Set to `RmdOperator`.
 
-Each entry should start with a hypen (`-`) and the job name.
+- Optional Parameters:
 
-## Using `external_dependencies`
+    - **dependencies** - Covered above.
+    - **external_dependencies** - Covered above.
 
-Each entry should start with a hypen (`-`) and follow the format `dag_name: job_name`. This will create an external task sensor to wait for a job in the other DAG.
+You can write any R code you want here, so long as your R server supports it. Check out the `rserver` directory for more information the docker image and installing packages.
 
-Additionally the format `dag_name: all` can be used to specify to wait for an entire DAG to complete before another DAG runs.
+## JupyterOperator
 
-## Auto-dependencies in `MaterializedPostgresOperator`
+To use Python in your data pipeline, we'd recommend using gusty's `JupyterOperator`. This operator assumes that there is an external Python server on which to run python tasks. It expects an airflow connection, `pythonserver_default`, which is an ssh connection string. In this demo, we use a docker container, `pythonserver` to run python tasks. The connection to the Python server is specified in `docker-compose.yml`, under `AIRFLOW_CONN_PYTHONSERVER_DEFAULT`.
 
-`MaterializedPostgresOperator` jobs will also parse the query to identify any tables that start with `views.`, check if those tables are in the local DAG, and set those dependencies automatically.
+Note that the JupyterOperator can Jupyter Notebook `.ipynb` (version 4) or any other markdown file format with YAML frontmatter. Here is how to configure your file to have the tasks register properly:
+
+- If using `.ipynb`: Add a YAML markdown chunk to the top of your notebook, then specify required and optional parameters as needed.
+- If using another markdown format (e.g. a `.Rmd`): Specify required and optional parameters in the YAML frontmatter portion of the file.
+
+As with all other operators, here are the parameters that are taken:
+
+- Required Parameters:
+
+    - **operator** - Specifies the operator we'll be using. Set to `JupyterOperator`.
+
+- Optional Parameters:
+
+    - **dependencies** - Covered above.
+    - **external_dependencies** - Covered above.
+
+You can write any Python code you want here, so long as your Python server supports it. Check out the `pythonserver` directory for more information the docker image and installing packages.
