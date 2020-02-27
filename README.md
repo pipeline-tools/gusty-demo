@@ -127,7 +127,7 @@ Note that if you are going to be using new parameters for a custom operator, and
 template_fields = ParentClass.template_fields + ["additional_field"]
 ```
 
-You can check out a custom operator at [airflow/operators/random_joke_operator.py](https://github.com/chriscardillo/gusty-demo/blob/master/airflow/operators/random_joke_operator.py). Note this operator uniquely does not have an explict `execute` method (as is required according to [Airflow documentation on creating custom operators](https://airflow.apache.org/docs/stable/howto/custom-operator.html)). This is because of a neat feature of [gusty's `PythonToPostgresOperator`](https://github.com/chriscardillo/gusty/blob/master/gusty/operators/python_to_postgres_operator.py) . Your custom operator most likely will need an `execute` method.
+You can check out an example custom operator at [airflow/operators/random_joke_operator.py](https://github.com/chriscardillo/gusty-demo/blob/master/airflow/operators/random_joke_operator.py). Note the need for an  explicit `execute` method (as is required according to [Airflow documentation on creating custom operators](https://airflow.apache.org/docs/stable/howto/custom-operator.html)).
 
 # Gusty Operators
 
