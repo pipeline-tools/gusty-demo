@@ -4,7 +4,14 @@ It includes several example DAGs, as well as the Docker infrastructure for you t
 
 # Quick Start
 
-`git clone https://github.com/chriscardillo/gusty-demo.git` on local machine and get Airflow up and running locally in three easy steps:
+Clone the repo on your local machine...
+
+```
+git clone https://github.com/chriscardillo/gusty-demo.git
+```
+
+...and get Airflow up and running locally in three easy steps:
+
 
 ### 1: Edit Your Bash Profile
 
