@@ -1,0 +1,49 @@
+version: '3.3'
+services:
+    postgres:
+        image: postgres:12
+        environment:
+            - POSTGRES_USER=${DEFAULT_USER}
+            - POSTGRES_PASSWORD=${DEFAULT_PASSWORD}
+            - POSTGRES_DB=airflow
+        ports:
+            - "5678:5432"
+    airflow:
+        build:
+            context: ./airflow
+        environment:
+                - AIRFLOW__CORE__SQL_ALCHEMY_CONN=postgresql://${DEFAULT_USER}:${DEFAULT_PASSWORD}@postgres:5432/airflow
+                - AIRFLOW_CONN_POSTGRES_DEFAULT=postgresql://${DEFAULT_USER}:${DEFAULT_PASSWORD}@postgres:5432/datawarehouse
+                - AIRFLOW__CORE__FERNET_KEY=${FERNET_KEY}
+                - AIRFLOW__WEBSERVER__SECRET_KEY=${SECRET_KEY}
+        command: >
+            /bin/bash -c "
+                # Wait for PG
+                sleep 5
+
+                # Clean up pid
+                rm -f airflow-webserver.pid
+
+                # Set up metadata database
+                airflow upgradedb
+
+                # Create default users
+                python3 demo-setup/user_setup.py
+
+                # Set up datalake db & views schema
+            	  python3 demo-setup/datawarehouse_setup.py
+
+                # Start airflow
+                airflow scheduler &
+            	  airflow webserver
+
+                # Keep the server on no matter what
+                sleep infinity
+            "
+        restart: always
+        depends_on:
+            - postgres
+        volumes:
+                - ./airflow:/usr/local/airflow
+        ports:
+            - "8080:8080"

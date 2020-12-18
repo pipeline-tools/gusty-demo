@@ -1,0 +1,5 @@
+operator: BashOperator
+dependencies:
+  - pour_coffee
+  - plate_eggs
+bash_command: echo breakfast is excellent

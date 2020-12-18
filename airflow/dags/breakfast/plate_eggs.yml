@@ -1,0 +1,4 @@
+operator: BashOperator
+dependencies:
+  - cook_eggs
+bash_command: sleep 2 && echo eggs are ready

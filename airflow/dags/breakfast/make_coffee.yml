@@ -1,0 +1,2 @@
+operator: BashOperator
+bash_command: sleep 5 && echo coffee ready

@@ -1,0 +1,2 @@
+operator: BashOperator
+bash_command: sleep 10 && echo eggs are done

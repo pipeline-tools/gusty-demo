@@ -1,0 +1,4 @@
+operator: BashOperator
+dependencies:
+  - make_coffee
+bash_command: sleep 1 && echo coffee is poured
