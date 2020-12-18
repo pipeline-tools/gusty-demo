@@ -23,6 +23,7 @@ RUN Rscript -e 'install.packages("devtools")'
 RUN Rscript -e 'install.packages("tidyverse")'
 RUN Rscript -e 'install.packages("doParallel")'
 RUN Rscript -e 'install.packages("tidymodels")'
+RUN Rscript -e 'install.packages("ranger")'
 RUN Rscript -e 'install.packages("RPostgres")'
 
 # Airflow Env Vars

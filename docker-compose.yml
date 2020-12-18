@@ -16,6 +16,8 @@ services:
                 - AIRFLOW_CONN_POSTGRES_DEFAULT=postgresql://${DEFAULT_USER}:${DEFAULT_PASSWORD}@postgres:5432/datawarehouse
                 - AIRFLOW__CORE__FERNET_KEY=${FERNET_KEY}
                 - AIRFLOW__WEBSERVER__SECRET_KEY=${SECRET_KEY}
+                - DEFAULT_USER=${DEFAULT_USER}
+                - DEFAULT_PASSWORD=${DEFAULT_PASSWORD}
         command: >
             /bin/bash -c "
                 # Wait for PG

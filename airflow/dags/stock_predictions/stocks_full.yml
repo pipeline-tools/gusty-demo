@@ -1,0 +1,19 @@
+operator: MaterializedPostgresOperator
+description: Cleaning the stock data for our model
+fields:
+    - date: Date of market data
+    - close: Stock price at close
+    - type: Whether the closing price occured in the past (known) or is a model prediction (predicted)
+sql: |-
+    SELECT
+      date,
+      close,
+      'known' AS type
+    FROM views.stocks_cleaned
+    UNION ALL
+    SELECT
+      date,
+      predicted_close AS close,
+      'predicted' AS type
+    FROM views.model_predictions
+    ORDER BY date DESC

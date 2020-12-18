@@ -37,3 +37,11 @@ Then run with the following:
 ```
 docker-compose up
 ```
+
+### Explore
+
+Airflow should be available for you at `localhost:8080`. You can log in with the `DEFAULT_USER` and `DEFAULT_PASSWORD` from your `.env`.
+
+After you turn on the example DAGs and let them run, you can connect to the the containerized Postgres database with a URI akin to `postgresql://DEFAULT_USER:DEFAULT_PASSWORD@localhost:5678/datawarehouse`. A reminder all tables are housed under the schema `views`.
+
+Please feel free to create issues, or fork and use to start your own gusty pipeline. Your feedback is very important. Hope you consider using gusty in your data pipeline projects.

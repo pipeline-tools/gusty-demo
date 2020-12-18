@@ -1,13 +1,12 @@
-description: "For making the most important meal of the day"
+description: "A naive DAG for predicting the closing price of SPY, the popular S&P 500 ETF"
 schedule_interval: "0 0 * * *"
 default_args:
-    owner: Roy Choi
+    owner: John Templeton
     depends_on_past: False
     start_date: !days_ago 1
-    email: roy@gusty.com
+    email: john@gusty.com
     email_on_failure: False
     email_on_retry: False
     retries: 1
     retry_delay: !timedelta 'minutes: 5'
     sla: !timedelta 'hours: 2'
-    latest_only: False

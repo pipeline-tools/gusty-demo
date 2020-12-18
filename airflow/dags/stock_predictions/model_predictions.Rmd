@@ -1,0 +1,90 @@
+---
+operator: RmdOperator
+dependencies:
+  - stocks_cleaned
+external_dependencies:
+  - breakfast: all
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+```
+
+This model is intentionally not great.
+
+```{r libraries}
+library(tidyverse)
+library(tidymodels)
+```
+
+```{r establish_connection}
+
+con <- DBI::dbConnect(RPostgres::Postgres(),
+                      host = "postgres",
+                      port = 5432,
+                      user = Sys.getenv("DEFAULT_USER"),
+                      password = Sys.getenv("DEFAULT_PASSWORD"),
+                      db = "datawarehouse")
+
+```
+
+```{r collect_data}
+
+spy <- DBI::dbGetQuery(con, "SELECT date, close FROM views.stocks_cleaned") %>%
+  as_tibble() %>%
+  arrange(date)
+
+```
+
+```{r splits}
+
+train <- spy %>%
+  slice(1:(nrow(spy) - 300))
+
+test <- spy %>%
+  slice((nrow(spy) - 300 + 1):nrow(spy))
+
+```
+
+```{r features}
+
+spy_recipe <- recipe(spy, close ~ ., data = train) %>%
+  step_date(date, features = c("dow", "month", "year")) %>%
+  step_rm(date) %>%
+  prep()
+
+```
+
+I recommend using the tune package, as well as workflows, in real life.
+
+```{r model_fit}
+
+rf_spec <- rand_forest(mtry = 3, trees = 800, min_n = 10) %>%
+  set_mode("regression") %>%
+  set_engine("ranger", keep.inbag = TRUE)
+
+rf_fit <- rf_spec %>%
+  fit(close ~ ., data = spy_recipe %>% juice())
+
+```
+
+These are terrible predictions.
+
+```{r forecast}
+
+the_future <- tibble(date = max(spy$date) + c(1:100)) %>%
+  filter(!lubridate::wday(date, label = T) %in% c("Sat", "Sun"))
+
+predicted <- rf_fit %>%
+  predict(spy_recipe %>% bake(new_data = the_future)) %>%
+  bind_cols(the_future) %>%
+  select(date, predicted_close = .pred)
+
+```
+
+
+```{r save_to_db}
+
+DBI::dbWriteTable(con, DBI::SQL("datawarehouse.views.model_predictions"), as.data.frame(predicted), overwrite = TRUE)
+
+```
