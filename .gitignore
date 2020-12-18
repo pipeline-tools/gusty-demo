@@ -128,14 +128,11 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-# airflow log files
-*.pid
-*.log
-*.err
-*.out
-logs
+# Ignore logs folder
+airflow/logs/*
 
-# Using this as Rproj for convenience
-ez-airflow.Rproj
-.Rproj.user
-airflow/dags/gusty
+# Ignore webserver pid
+airflow/airflow-webserver.pid
+
+# Unittests are personal
+unittests.cfg

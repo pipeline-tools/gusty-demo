@@ -1,5 +1,0 @@
-operator: BashOperator
-bash_command: sleep 5
-retries: 3
-dependencies:
-    - print_date

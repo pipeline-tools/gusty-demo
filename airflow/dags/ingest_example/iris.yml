@@ -1,2 +1,0 @@
-operator: CSVToPostgresOperator
-csv_file: iris.csv
