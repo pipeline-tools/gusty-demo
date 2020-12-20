@@ -1,5 +1,5 @@
 ---
-operator: RmdOperator
+operator: local.RmdOperator
 dependencies:
   - stocks_cleaned
 external_dependencies:

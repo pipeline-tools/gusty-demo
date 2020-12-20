@@ -27,10 +27,16 @@ services:
                 rm -f airflow-webserver.pid
 
                 # Set up metadata database
-                airflow upgradedb
+                airflow db upgrade
 
-                # Create default users
-                python3 demo-setup/user_setup.py
+                # Create default user
+                airflow users create \
+                  --username ${DEFAULT_USER} \
+                  --password ${DEFAULT_PASSWORD} \
+                  --email ${DEFAULT_USER}@gusty.com \
+                  --firstname Default \
+                  --lastname User \
+                  --role Admin
 
                 # Set up datalake db & views schema
             	  python3 demo-setup/datawarehouse_setup.py
