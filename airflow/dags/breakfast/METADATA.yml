@@ -1,5 +1,9 @@
 description: "For making the most important meal of the day"
 schedule_interval: "0 0 * * *"
+tags:
+  - delicious
+  - nutritious
+  - important
 default_args:
     owner: Roy Choi
     depends_on_past: False

@@ -1,4 +1,4 @@
-operator: MaterializedPostgresOperator
+operator: local.MaterializedPostgresOperator
 description: Cleaning the stock data for our model
 fields:
     - date: Date of market data

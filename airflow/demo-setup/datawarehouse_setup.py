@@ -1,4 +1,4 @@
-from airflow.hooks.postgres_hook import PostgresHook
+from airflow.providers.postgres.hooks.postgres import PostgresHook
 from sqlalchemy_utils import create_database, database_exists
 import sqlalchemy
 
