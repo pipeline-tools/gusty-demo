@@ -1,4 +1,4 @@
-FROM python:3.7.6-slim-buster
+FROM python:3.9.1-slim-buster
 USER root
 
 # PSQL Requirements
