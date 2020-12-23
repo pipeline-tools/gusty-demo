@@ -4,10 +4,6 @@ USER root
 # PSQL Requirements
 RUN apt-get update && apt-get install -y libpq-dev build-essential
 
-# Python Requirements
-ADD requirements.txt .
-RUN pip3 install -r requirements.txt
-
 # Get R
 RUN apt-get -y install libssl-dev libgit2-dev libcurl4-gnutls-dev libxml2-dev openssl
 RUN apt-get -y install dirmngr --install-recommends
@@ -25,6 +21,10 @@ RUN Rscript -e 'install.packages("doParallel")'
 RUN Rscript -e 'install.packages("tidymodels")'
 RUN Rscript -e 'install.packages("ranger")'
 RUN Rscript -e 'install.packages("RPostgres")'
+
+# Python Requirements
+ADD requirements.txt .
+RUN pip3 install -r requirements.txt
 
 # Airflow Env Vars
 ENV AIRFLOW_HOME='/usr/local/airflow'
