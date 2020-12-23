@@ -18,8 +18,8 @@ These keys will be used to encrypt passwords in our connections, and power the A
 Save the generated keys and a default user/password in a `.env` file in the same directory as your `docker-compose.yml`. The `.env` file should look like this:
 
 ```
-DEFAULT_USER='your_username'
-DEFAULT_PASSWORD='your_password'
+DEFAULT_USER=your_username
+DEFAULT_PASSWORD=your_password
 FERNET_KEY='a_fernet_key'
 SECRET_KEY='another_fernet_key'
 ```
