@@ -1,0 +1,4 @@
+tooltip: "Juice comes second"
+suffix_group_id: True
+dependencies:
+  - coffee

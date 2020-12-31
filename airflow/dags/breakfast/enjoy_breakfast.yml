@@ -1,5 +1,6 @@
 operator: airflow.operators.bash.BashOperator
 dependencies:
-  - pour_coffee
-  - plate_eggs
+  - juice
+  - coffee
+  - griddle
 bash_command: echo breakfast is excellent

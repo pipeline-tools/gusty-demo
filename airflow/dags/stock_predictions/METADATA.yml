@@ -10,3 +10,4 @@ default_args:
     retries: 1
     retry_delay: !timedelta 'minutes: 5'
     sla: !timedelta 'hours: 2'
+latest_only: True
