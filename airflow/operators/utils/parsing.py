@@ -14,6 +14,5 @@ def detect_schema_tables(query, schema):
 def detect_dependencies(query, schemas):
     deps = []
     for schema in schemas:
-        pass
         deps.append(detect_schema_tables(query, schema))
     return [dep for schema_deps in deps for dep in schema_deps]
