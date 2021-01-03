@@ -132,6 +132,7 @@ dmypy.json
 *.Rproj*
 
 # Ignore logs folder
+airflow/logs
 airflow/logs/*
 
 # Ignore webserver pid
