@@ -2,7 +2,7 @@ This is a demo of how the [gusty package](https://github.com/chriscardillo/gusty
 
 ## Running the demo
 
-Note: this demo takes some time to build. If you are in a hurry, please check out [gusty-demo-lite](https://github.com/chriscardillo/gusty-demo-lite)
+Note: this demo takes some time to build, and a little effort up front. If you are in a hurry, please check out [gusty-demo-lite](https://github.com/chriscardillo/gusty-demo-lite).
 
 ### Generate secrets
 
