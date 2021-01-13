@@ -12,7 +12,6 @@ class JupyterOperator(BashOperator):
     (But it can grab this from airflow connections)
     """
     ui_color = "#EF8D50"
-    template_fields = BashOperator.template_fields + ('file_path', )
 
     # gusty gives us a file_path for free
     @apply_defaults

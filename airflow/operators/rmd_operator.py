@@ -11,7 +11,6 @@ class RmdOperator(BashOperator):
     Note that it is up to the Rmd itself to handle connecting to a database.
     """
     ui_color = "#75AADB"
-    template_fields = BashOperator.template_fields + ('file_path', )
 
     # gusty gives us a file_path for free
     @apply_defaults
