@@ -1,3 +1,4 @@
+---
 operator: local.MaterializedPostgresOperator
 description: Cleaning the stock data for our model
 fields:
@@ -7,13 +8,14 @@ fields:
     - low: Low of stock price for the day
     - close: Stock price at close
     - volume: Total amount of stock traded for the day
-sql: |-
-    SELECT
-      DATE(date) AS date,
-      open,
-      high,
-      low,
-      close,
-      volume
-    FROM views.stock_data
-    WHERE close IS NOT NULL
+---
+
+SELECT
+  DATE(date) AS date,
+  open,
+  high,
+  low,
+  close,
+  volume
+FROM views.stock_data
+WHERE close IS NOT NULL
