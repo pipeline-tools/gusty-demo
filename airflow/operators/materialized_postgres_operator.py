@@ -11,7 +11,8 @@ check_schemas = ['views', 'app', 'another_schema']
 class MaterializedPostgresOperator(PostgresOperator):
     ui_color = "#c37ed5"
 
-    @apply_defaults
+    # Note - apply_defaults is being depricated as of airflow 2.1.0
+    # @apply_defaults
     def __init__(
             self,
             task_id,

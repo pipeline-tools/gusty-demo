@@ -13,7 +13,8 @@ class RmdOperator(BashOperator):
     ui_color = "#75AADB"
 
     # gusty gives us a file_path for free
-    @apply_defaults
+    # Note - apply_defaults is being depricated as of airflow 2.1.0
+    # @apply_defaults
     def __init__(self, file_path, *args, **kwargs):
         self.file_path = file_path
         self.rendered_output = self.file_path.replace('.Rmd', '.knit.md')
