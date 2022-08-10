@@ -2,7 +2,7 @@ apache-airflow==2.2.4
 apache-airflow-providers-postgres==1.0.2
 gusty==0.6.0
 ipykernel==5.5.5
-nbconvert==6.0.7
+nbconvert==6.3.0
 siuba==0.0.24
 SQLAlchemy-Utils==0.36.7
 yfinance==0.1.55
