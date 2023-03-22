@@ -38,7 +38,7 @@ services:
                   --lastname User \
                   --role Admin
 
-                # Set up datalake db & views schema
+                # Set up warehouse db & views schema
             	  python3 demo-setup/datawarehouse_setup.py
 
                 # Start airflow

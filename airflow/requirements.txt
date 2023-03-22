@@ -1,8 +1,8 @@
-apache-airflow==2.4.1
-apache-airflow-providers-postgres==1.0.2
-gusty==0.6.0
-ipykernel==5.5.5
-nbconvert==6.5.1
-siuba==0.0.24
-SQLAlchemy-Utils==0.36.7
-yfinance==0.1.55
+apache-airflow==2.5.2
+apache-airflow-providers-postgres==5.4.0
+gusty==0.18.1
+ipykernel==6.22.0
+nbconvert==7.2.10
+siuba==0.4.2
+SQLAlchemy-Utils==0.40.0
+yfinance==0.2.13
