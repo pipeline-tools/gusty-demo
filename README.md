@@ -1,8 +1,8 @@
-This is a demo of how the [gusty package](https://github.com/chriscardillo/gusty) works with [Airflow](https://airflow.apache.org/) to assist in the organization, construction, and management of DAGs, tasks, dependencies, and operators. It requires that you have [Docker](https://docs.docker.com/get-docker/) and [Docker Compose](https://docs.docker.com/compose/install/) installed on your machine.
+This is a demo of how the [gusty package](https://pypi.org/project/gusty/) works with [Airflow](https://airflow.apache.org/) to assist in the organization, construction, and management of DAGs, tasks, dependencies, and operators. It requires that you have [Docker](https://docs.docker.com/get-docker/) and [Docker Compose](https://docs.docker.com/compose/install/) installed on your machine.
 
 ## Running the demo
 
-Note: this demo takes some time to build, and a little effort up front. If you are in a hurry, please check out [gusty-demo-lite](https://github.com/chriscardillo/gusty-demo-lite).
+Note: this demo takes some time to build, and a little effort up front. If you are in a hurry, please check out [gusty-demo-lite](https://github.com/pipeline-tools/gusty-demo-lite).
 
 ### Generate secrets
 
