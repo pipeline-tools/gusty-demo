@@ -30,13 +30,7 @@ services:
                 airflow db upgrade
 
                 # Create default user
-                airflow users create \
-                  --username ${DEFAULT_USER} \
-                  --password ${DEFAULT_PASSWORD} \
-                  --email ${DEFAULT_USER}@gusty.com \
-                  --firstname Default \
-                  --lastname User \
-                  --role Admin
+                airflow users create --username ${DEFAULT_USER} --password ${DEFAULT_PASSWORD} --email ${DEFAULT_USER}@gusty.com --firstname Default --lastname User --role Admin
 
                 # Set up warehouse db & views schema
             	  python3 demo-setup/datawarehouse_setup.py
