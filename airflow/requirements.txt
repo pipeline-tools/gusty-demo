@@ -1,4 +1,4 @@
-apache-airflow==2.7.2
+apache-airflow==2.8.1
 apache-airflow-providers-postgres==5.4.0
 gusty==0.21.0
 ipykernel==6.22.0
